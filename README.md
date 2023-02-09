@@ -19,7 +19,7 @@ The platform will be able to perform the following functionalities.
 accounts to be able to perform different actions and logout.
 - A buyer should be able to search, compare, buy and return different types of products
 from different sellers, each item will have category tags that the buyer will be able to search
-through, and compare items based on price.
+through, and compare items based on price of the listing.
 - A seller should be able to add, sell and receive payments for their available products.
 - An admin should be able to approve/block new user accounts and products, and
 oversee different user actions.

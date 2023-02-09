@@ -4,7 +4,7 @@
 Justin Whitfield | jpw456 | justinwhitfieldd@gmail.com | backend, frontend <br />
 Brian Doan       | bd1113 | doantbrian@gmail.com       | documentation, frontend <br />
 Lauren Fortner   | laf280 | laurenafortner@gmail.com   | frontend, UI design <br />
-Kendarius James  | kdj278 | kendariusjames18@gmail.com | backend, user stories <br />
+Kendarius James  | kdj284 | kendariusjames18@gmail.com | backend, user stories <br />
 
 ### Description:
 The goal of our group is to design and develop an e-commerce website that will have 

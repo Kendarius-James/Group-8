@@ -29,10 +29,7 @@ INSTALLED_APPS = [
     'core',
     'accounts',
     'seller',
-<<<<<<< Updated upstream
-=======
     'buyer',
->>>>>>> Stashed changes
     'product',
     'cart',
     'order',
@@ -133,7 +130,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 LOGIN_URL = 'seller:login'
-LOGIN_REDIRECT_URL = 'seller:seller-admin'
+LOGIN_REDIRECT_URL = 'seller:seller-dashboard'
 LOGOUT_REDIRECT_URL = 'core:home'
 
 SESSION_COOKIE_AGE = 86400 # Day in Seconds
@@ -145,9 +142,9 @@ STRIPE_PUB_KEY = 'pk_test_OKdhbDNME5KHtnpzYRBfNmEZ00mjM6DVsJ' # For JavaScript
 STRIPE_SECRET_KEY = 'sk_test_jaIdMJOlkcUG6QpXV5wAJxXT005aZAJVM1' # For Django Backend
 
 # For Email Notification
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'group8isbest'
+EMAIL_BACKEND = 'django.core.mail.backends.group8isbest.EmailBackend'
+EMAIL_HOST = 'group8isbest.gmail.com'
+EMAIL_HOST_USER = 'group8isbest@gmail.com'
 EMAIL_HOST_PASSWORD = 'IntroSE123'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True

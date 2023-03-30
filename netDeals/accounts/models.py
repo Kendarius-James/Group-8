@@ -23,13 +23,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     )
     email = models.EmailField(unique=True)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='buyer')
-<<<<<<< Updated upstream
-    phone_number = models.CharField(max_length=15, null=True, blank=True)
-    address = models.CharField(max_length=255, null=True, blank=True)
-
-=======
    
->>>>>>> Stashed changes
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
@@ -45,11 +39,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
 
 class BuyerProfile(models.Model):
-<<<<<<< Updated upstream
-=======
     phone_number = models.CharField(max_length=15, null=True, blank=True)
     address = models.CharField(max_length=255, null=True, blank=True)
->>>>>>> Stashed changes
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=30, null=True, blank=True)
     last_name = models.CharField(max_length=30, null=True, blank=True)
@@ -58,11 +49,8 @@ class BuyerProfile(models.Model):
         return f'{self.first_name} {self.last_name}'
 
 class SellerProfile(models.Model):
-<<<<<<< Updated upstream
-=======
     phone_number = models.CharField(max_length=15, null=True, blank=True)
     address = models.CharField(max_length=255, null=True, blank=True)
->>>>>>> Stashed changes
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     company_name = models.CharField(max_length=100, null=True, blank=True)
     company_description = models.TextField(null=True, blank=True)

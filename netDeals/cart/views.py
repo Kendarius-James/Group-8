@@ -6,7 +6,7 @@ from django.shortcuts import redirect, render
 from .cart import Cart
 from .forms import CheckoutForm
 
-from order.utilities import checkout, notify_vendor, notify_customer
+from order.utilities import checkout, notify_seller, notify_customer
 
 # Create your views here.
 def cart_detail(request):
@@ -24,7 +24,7 @@ def cart_detail(request):
                 charge = stripe.Charge.create(
                     amount=int(cart.get_total_cost() * 100), # Amount in Cents
                     currency='USD',
-                    description='Charge From Multivendor Shop',
+                    description='Charge From Multiseller Shop',
                     source=stripe_token
                 )
 
@@ -42,7 +42,7 @@ def cart_detail(request):
 
                 # SEnd Email Notification
                 notify_customer(order)
-                notify_vendor(order)
+                notify_seller(order)
 
                 return redirect('cart:success')
             

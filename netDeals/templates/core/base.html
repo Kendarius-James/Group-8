@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> {% block title %}Multi Vendor E-Commerce Website{% endblock title %} </title>
+    <title> {% block title %}NetDeals{% endblock title %} </title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
 
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
@@ -18,7 +18,7 @@
         <nav class="navbar" role="navigation" aria-label="main navigation">
             <div class="navbar-brand">
                 <a class="navbar-item" href="{% url 'core:home' %}">
-                <img src="https://2.bp.blogspot.com/-mkVne3V2tzY/Xfo99c80KUI/AAAAAAAAD_c/9EbC4qu-fYAeVjLi3ONzRZ-osIW4H3qBACK4BGAYYCw/s1600/Vijay%2BThapa%2BLogo%2BHD.png" width="112" height="28">
+                    <h1><strong>NetDeals</strong></h1>
                 </a>
 
                 <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
@@ -69,21 +69,21 @@
 
                 <div class="navbar-item has-dropdown is-hoverable">
                     <a class="navbar-link is-capitalized">
-                    {{user.vendor.name}}
+                    {{user.seller.name}}
                     </a>
 
                     <div class="navbar-dropdown">
-                    <a class="navbar-item" href="{% url 'vendor:vendor-admin' %}">
+                    <a class="navbar-item" href="{% url 'seller:seller-admin' %}">
                         Profile
                     </a>
-                    <a class="navbar-item" href="{% url 'vendor:edit-vendor' %}">
+                    <a class="navbar-item" href="{% url 'seller:edit-seller' %}">
                         Update Profile
                     </a>
-                    <a class="navbar-item" href="{% url 'vendor:add-product' %}">
+                    <a class="navbar-item" href="{% url 'seller:add-product' %}">
                         Add Product
                     </a>
                     <hr class="navbar-divider">
-                    <a class="navbar-item" href="{% url 'vendor:logout' %}">
+                    <a class="navbar-item" href="{% url 'seller:logout' %}">
                         Logout
                     </a>
                     </div>
@@ -93,10 +93,19 @@
 
                 <div class="navbar-item">
                     <div class="buttons">
-                        <a class="button is-primary" href="{% url 'vendor:become-vendor' %}">
-                            <strong>Become Vendor</strong>
+<<<<<<< Updated upstream
+                        <a class="button is-primary" href="{% url 'seller:become-seller' %}">
+                            <strong>Become Seller</strong>
                         </a>
-                        <a class="button is-light" href="{% url 'vendor:login' %}">
+=======
+                        <a class="button is-primary" href="{% url 'buyer:become-buyer' %}">
+                            <strong>Become Buyer</strong>
+                        </a>
+                        <a class="button is-primary" href="{% url 'seller:become-seller' %}">
+                            <strong>Become Seller</strong>
+                        </a>
+>>>>>>> Stashed changes
+                        <a class="button is-light" href="{% url 'seller:login' %}">
                             Log in
                         </a>
                     </div>
@@ -121,16 +130,16 @@
     
     <footer class="footer">
         <div class="container">
-            <h3 class="is-size-4 mb-4">Multi Vendor E-Commerce</h3>
+            <h3 class="is-size-4 mb-4">NetDeals</h3>
             
             {% if request.user.is_authenticated %}
-                <a href="{% url 'vendor:vendor-admin' %}">Vendor Admin</a>
+                <a href="{% url 'seller:seller-admin' %}">Seller Admin</a>
             {% else %}
-                <a href="{% url 'vendor:become-vendor' %}">Become a Vendor</a>
+                <a href="{% url 'seller:become-seller' %}">Become a Seller</a>
             {% endif %}
 
             <br>
-            <a href="{% url 'vendor:vendors' %}">All Vendors</a>
+            <a href="{% url 'seller:sellers' %}">All Sellers</a>
 
         </div>
     </footer>

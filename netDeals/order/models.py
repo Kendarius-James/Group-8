@@ -1,6 +1,6 @@
 from django.db import models
 from product.models import Product
-from vendor.models import Vendor
+from accounts.models import SellerProfile
 
 # Create your models here.
 class Order(models.Model):
@@ -13,7 +13,7 @@ class Order(models.Model):
     phone = models.CharField(max_length=100) 
     created_at = models.DateTimeField(auto_now_add=True)
     paid_amount = models.DecimalField(max_digits=8, decimal_places=2)
-    vendors = models.ManyToManyField(Vendor, related_name="orders")
+    sellers = models.ManyToManyField(SellerProfile, related_name="orders")
 
     class Meta:
         ordering = ['-created_at']
@@ -24,8 +24,8 @@ class Order(models.Model):
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, related_name="items", on_delete=models.CASCADE)
     product = models.ForeignKey(Product, related_name="items", on_delete=models.CASCADE)
-    vendor = models.ForeignKey(Vendor, related_name="items", on_delete=models.CASCADE)
-    vendor_paid = models.BooleanField(default=False)
+    seller = models.ForeignKey(SellerProfile, related_name="items", on_delete=models.CASCADE)
+    seller_paid = models.BooleanField(default=False)
     price = models.DecimalField(max_digits=8, decimal_places=2)
     quantity = models.IntegerField(default=1)
 

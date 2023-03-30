@@ -6,9 +6,13 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
- #   path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls),
     path('', include('core.urls')),
-    path('vendor/', include('vendor.urls')),
+<<<<<<< Updated upstream
+=======
+    path('buyer/', include('buyer.urls')),
+>>>>>>> Stashed changes
+    path('seller/', include('seller.urls')),
     path('product/', include('product.urls')),
     path('cart/', include('cart.urls')),
     path('order/', include('order.urls')),

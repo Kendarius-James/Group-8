@@ -20,7 +20,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-  #  'django.contrib.admin',
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -28,7 +28,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'core',
     'accounts',
-    'vendor',
+    'seller',
+<<<<<<< Updated upstream
+=======
+    'buyer',
+>>>>>>> Stashed changes
     'product',
     'cart',
     'order',
@@ -128,8 +132,8 @@ MEDIA_ROOT = BASE_DIR / 'media/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-LOGIN_URL = 'vendor:login'
-LOGIN_REDIRECT_URL = 'vendor:vendor-admin'
+LOGIN_URL = 'seller:login'
+LOGIN_REDIRECT_URL = 'seller:seller-admin'
 LOGOUT_REDIRECT_URL = 'core:home'
 
 SESSION_COOKIE_AGE = 86400 # Day in Seconds
@@ -143,11 +147,11 @@ STRIPE_SECRET_KEY = 'sk_test_jaIdMJOlkcUG6QpXV5wAJxXT005aZAJVM1' # For Django Ba
 # For Email Notification
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'YOUR-EMAIL'
-EMAIL_HOST_PASSWORD = 'YOUR-EMAIL-PASSWORD'
+EMAIL_HOST_USER = 'group8isbest'
+EMAIL_HOST_PASSWORD = 'IntroSE123'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-DEFAULT_EMAIL_FROM = 'Multi Vendor Site <YOUR-EMAIL>'
+DEFAULT_EMAIL_FROM = 'NetDeals <YOUR-EMAIL>'
 
-AUTH_USER_MODEL = "accounts.SellerUser"
+AUTH_USER_MODEL = "accounts.CustomUser"
 swappable = 'AUTH_USER_MODEL'

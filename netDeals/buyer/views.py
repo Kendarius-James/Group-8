@@ -1,8 +1,3 @@
-<<<<<<< Updated upstream
-from django.shortcuts import render
-
-# Create your views here.
-=======
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
@@ -45,4 +40,3 @@ def become_buyer(request):
 
     context = {'user_form': user_form, 'profile_form': profile_form}
     return render(request, 'seller/become_seller.html', context)
->>>>>>> Stashed changes

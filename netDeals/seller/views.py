@@ -14,6 +14,7 @@ from .forms import ProductForm
 # Converting Title into Slug
 from django.utils.text import slugify
 
+from django.shortcuts import render
 # Create your views here.
 # SellerProfile = SellerProfile
 # seller = seller
@@ -22,6 +23,8 @@ from django.utils.text import slugify
 def sellers(request):
     return render(request, 'seller/sellers.html')
 
+def passw(request):
+    return render(request, 'registration/password_reset_form.html')
 
 def become_seller(request):
     if request.method == 'POST':
@@ -113,4 +116,3 @@ def sellers(request):
 def seller(request, seller_id):
     seller = get_object_or_404(SellerProfile, pk=seller_id)
     return render(request, 'seller/seller.html', {'seller': seller})
-

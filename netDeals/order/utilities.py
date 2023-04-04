@@ -20,7 +20,7 @@ def notify_seller(order):
     from_email = settings.DEFAULT_EMAIL_FROM
 
     for seller in order.sellers.all():
-        to_email = seller.created_by.email
+        to_email = seller.user.email
         subject = 'New order'
         text_content = 'You have a new order!'
         html_content = render_to_string('order/email_notify_seller.html', {'order': order, 'seller': seller})

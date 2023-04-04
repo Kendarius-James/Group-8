@@ -1,32 +1,26 @@
-import stripe #pip install stripe 
-
 from django. conf import settings
 from django.contrib import messages
 from django.shortcuts import redirect, render
 from .cart import Cart
 from .forms import CheckoutForm
+from django.contrib.auth.models import AnonymousUser
+from accounts.models import BuyerProfile, SellerProfile, CustomUser
 
 from order.utilities import checkout, notify_seller, notify_customer
-
-# Create your views here.
 def cart_detail(request):
     cart = Cart(request)
 
-    # If Checkout
+    if isinstance(request.user, AnonymousUser) or request.user.role not in ['buyer', 'seller']:
+        profile = None
+    elif request.user.role == 'buyer':
+        profile = BuyerProfile.objects.get(user=request.user)
+    else:
+        profile = SellerProfile.objects.get(user=request.user)
+    
     if request.method == 'POST':
+
         form = CheckoutForm(request.POST)
         if form.is_valid():
-            stripe.api_key = settings.STRIPE_SECRET_KEY
-
-            stripe_token = form.cleaned_data['stripe_token']
-
-            try:
-                charge = stripe.Charge.create(
-                    amount=int(cart.get_total_cost() * 100), # Amount in Cents
-                    currency='USD',
-                    description='Charge From Multiseller Shop',
-                    source=stripe_token
-                )
 
                 first_name = form.cleaned_data['first_name']
                 last_name = form.cleaned_data['last_name']
@@ -45,10 +39,7 @@ def cart_detail(request):
                 notify_seller(order)
 
                 return redirect('cart:success')
-            
-            except Exception:
-                messages.error(request, "Something went wrong with payment.")
-            
+                
     else:
         form = CheckoutForm()
 
@@ -64,8 +55,9 @@ def cart_detail(request):
         cart.add(change_quantity, quantity, True)
         return redirect('cart:cart')
         
-    return render(request, 'cart/cart.html', {'form': form, 'stripe_pub_key': settings.STRIPE_PUB_KEY})
+    return render(request, 'cart/cart.html', {'form': form, 'profile': profile})
 
 
 def success(request):
     return render(request, 'cart/success.html')
+

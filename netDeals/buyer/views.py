@@ -40,3 +40,29 @@ def become_buyer(request):
 
     context = {'user_form': user_form, 'profile_form': profile_form}
     return render(request, 'seller/become_seller.html', context)
+
+@login_required
+def edit_buyer(request):
+    if request.user.role != 'buyer':
+        return redirect('core:home') 
+
+    buyer_profile = request.user.buyerprofile
+    if request.method == 'POST':
+        form = BuyerUserCreationForm(request.POST, instance=buyer_profile)
+        if form.is_valid():
+            form.save()
+            request.user.save()
+    else:
+        form = BuyerUserCreationForm(instance=buyer_profile)
+
+    context = {'form': form}
+
+    return render(request, 'buyer/edit_buyer.html', context)
+
+# def buyers(request):
+#     buyers = BuyerProfile.objects.all()
+#     return render(request, 'buyer/buyers.html', {'buyers': buyers})
+
+# def buyer(request, buyer_id):
+#     buyer = get_object_or_404(BuyerProfile, pk=buyer_id)
+#     return render(request, 'buyer/buyer.html', {'buyer': seller})

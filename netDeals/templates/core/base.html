@@ -14,8 +14,8 @@
 </head>
 <body>
 
-    <div class="container">
-        <nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="container px-4">
+        <nav class="navbar px-4" role="navigation" aria-label="main navigation">
             <div class="navbar-brand">
                 <a class="navbar-item" href="{% url 'core:home' %}">
                     <h1><strong>NetDeals</strong></h1>
@@ -65,7 +65,7 @@
                     <a href="{% url 'cart:cart' %}" class="button is-warning">Cart {% if cart %}({{cart|length}}){% endif %}</a>
                 </div>
                 
-                {% if request.user.is_authenticated %}
+                {% if user.role == 'seller' %}
 
                 <div class="navbar-item has-dropdown is-hoverable">
                     <a class="navbar-link is-capitalized">
@@ -89,8 +89,27 @@
                     </div>
                 </div>
 
-                {% else %}
+                {% elif user.role == 'buyer' %}
 
+                <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link is-capitalized">
+                    {{user.seller.name}}
+                    </a>
+                    <!-- All of these need to be updated! new pages will need to be made in templates pages -->
+                    <div class="navbar-dropdown">
+                    <a class="navbar-item" href="{% url 'seller:seller-dashboard' %}">
+                        Order History
+                    </a>
+                    <a class="navbar-item" href="{% url 'buyer:edit-buyer' %}">
+                        Update Profile
+                    </a>
+                    <hr class="navbar-divider">
+                    <a class="navbar-item" href="{% url 'seller:logout' %}">
+                        Logout
+                    </a>
+                    </div>
+                </div>
+                {% else %}
                 <div class="navbar-item">
                     <div class="buttons">
                         <a class="button is-primary" href="{% url 'buyer:become-buyer' %}">
@@ -104,15 +123,30 @@
                         </a>
                     </div>
                 </div>
-
                 {% endif %}
-
-
                 </div>
             </div>
             </nav>
     </div>
-    
+
+    <style>
+       .navbar {
+        background-color: #f5f5f5; /* Soft color */
+        border-radius: 1rem 1rem 0 0;
+        margin-bottom: 1rem;
+        width: 100%;
+        position: relative;
+        }
+
+        .navbar .input {
+        width: 400px; /* Longer search bar */
+        }
+
+        .navbar .field.has-addons {
+        width: 100%;
+        } 
+    </style>
+
     <section class="section">
         <div class="container">
 
@@ -121,15 +155,13 @@
         </div>
     </section>
 
-    
     <footer class="footer">
         <div class="container">
             <h3 class="is-size-4 mb-4">NetDeals</h3>
             
-            {% if request.user.is_authenticated %}
+            {% if user.role == 'seller' %}
                 <a href="{% url 'seller:seller-dashboard' %}">Seller Dashboard</a>
-            {% else %}
-                <a href="{% url 'seller:become-seller' %}">Become a Seller</a>
+           
             {% endif %}
 
             <br>

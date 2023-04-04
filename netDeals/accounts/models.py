@@ -49,6 +49,7 @@ class BuyerProfile(models.Model):
         return f'{self.first_name} {self.last_name}'
 
 class SellerProfile(models.Model):
+    is_approved = models.BooleanField(default=False) # for admin approval
     phone_number = models.CharField(max_length=15, null=True, blank=True)
     address = models.CharField(max_length=255, null=True, blank=True)
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)

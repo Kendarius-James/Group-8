@@ -87,12 +87,75 @@
             {% endif %}
 
             <div class="columns">
+                {% if user.role == 'buyer' %}
+                    <div class="column is-6">
+                        <div class="field">
+                            <label>First Name</label>
+
+                            <div class="control">
+                                <input type="text" name="first_name" value="{{profile.first_name}}" id="" class="input">
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label>Last Name</label>
+
+                            <div class="control">
+                                <input type="text" name="last_name" id="" value="{{profile.last_name}}" class="input">
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label>Email</label>
+
+                            <div class="control">
+                                <input type="email" name="email" id="" value="{{request.user.email}}" class="input">
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label>Phone</label>
+
+                            <div class="control">
+                                <input type="text" name="phone" id="" value="{{profile.phone_number}}" class="input">
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="column is-6">
+                        <div class="field">
+                            <label>Address</label>
+
+                            <div class="control">
+                                <input type="text" name="address" id="" value="{{profile.address}}" class="input">
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label>Zip Code</label>
+
+                            <div class="control">
+                                <input type="text" name="zipcode" id="" value="" class="input">
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label>Place</label>
+
+                            <div class="control">
+                                <input type="text" name="place" id="" value="" class="input">
+                            </div>
+                        </div>
+
+                    </div>
+                {% elif user.role == 'seller' %}
                 <div class="column is-6">
                     <div class="field">
                         <label>First Name</label>
 
                         <div class="control">
-                            <input type="text" name="first_name" id="" class="input">
+                            <input type="text" name="first_name" value="{{profile.first_name}}" id="" class="input">
                         </div>
                     </div>
 
@@ -100,7 +163,7 @@
                         <label>Last Name</label>
 
                         <div class="control">
-                            <input type="text" name="last_name" id="" class="input">
+                            <input type="text" name="last_name" id="" value="{{profile.last_name}}" class="input">
                         </div>
                     </div>
 
@@ -108,7 +171,7 @@
                         <label>Email</label>
 
                         <div class="control">
-                            <input type="email" name="email" id="" class="input">
+                            <input type="email" name="email" id="" value="{{request.user.email}}" class="input">
                         </div>
                     </div>
 
@@ -116,7 +179,7 @@
                         <label>Phone</label>
 
                         <div class="control">
-                            <input type="text" name="phone" id="" class="input">
+                            <input type="text" name="phone" id="" value="{{profile.phone_number}}" class="input">
                         </div>
                     </div>
 
@@ -127,7 +190,7 @@
                         <label>Address</label>
 
                         <div class="control">
-                            <input type="text" name="address" id="" class="input">
+                            <input type="text" name="address" id="" value="{{profile.address}}" class="input">
                         </div>
                     </div>
 
@@ -135,7 +198,7 @@
                         <label>Zip Code</label>
 
                         <div class="control">
-                            <input type="text" name="zipcode" id="" class="input">
+                            <input type="text" name="zipcode" id="" value="" class="input">
                         </div>
                     </div>
 
@@ -143,16 +206,79 @@
                         <label>Place</label>
 
                         <div class="control">
-                            <input type="text" name="place" id="" class="input">
+                            <input type="text" name="place" id="" value="" class="input">
                         </div>
                     </div>
 
                 </div>
+                {% else %}
+                    <div class="column is-6">
+                        <div class="field">
+                            <label>First Name</label>
 
+                            <div class="control">
+                                <input type="text" name="first_name"  id="" class="input">
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label>Last Name</label>
+
+                            <div class="control">
+                                <input type="text" name="last_name" id="" class="input">
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label>Email</label>
+
+                            <div class="control">
+                                <input type="email" name="email" id="" class="input">
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label>Phone</label>
+
+                            <div class="control">
+                                <input type="text" name="phone" id="" class="input">
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="column is-6">
+                        <div class="field">
+                            <label>Address</label>
+
+                            <div class="control">
+                                <input type="text" name="address" id="" class="input">
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label>Zip Code</label>
+
+                            <div class="control">
+                                <input type="text" name="zipcode" id="" class="input">
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label>Place</label>
+
+                            <div class="control">
+                                <input type="text" name="place" id="" class="input">
+                            </div>
+                        </div>
+
+                    </div>
+                {% endif %}
             </div>
+           
 
 
-            <h2 class="subtitle">Payment Information</h2>
+            <!-- <h2 class="subtitle">Payment Information</h2>
 
             <div id="card-element">
                 {% comment %} A stripe Element will be inserted here {% endcomment %}
@@ -164,7 +290,7 @@
                         {{message}}
                     </div>
                 {% endfor %}
-            {% endif %}
+            {% endif %} -->
 
             <div class="field">
                 <div class="control">

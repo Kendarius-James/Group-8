@@ -138,17 +138,18 @@ CART_SESSION_ID = 'cart'
 
 
 # STRIPE PAYMENT
-STRIPE_PUB_KEY = 'pk_test_OKdhbDNME5KHtnpzYRBfNmEZ00mjM6DVsJ' # For JavaScript
-STRIPE_SECRET_KEY = 'sk_test_jaIdMJOlkcUG6QpXV5wAJxXT005aZAJVM1' # For Django Backend
+# STRIPE_PUB_KEY = 'pk_test_OKdhbDNME5KHtnpzYRBfNmEZ00mjM6DVsJ' # For JavaScript
+# STRIPE_SECRET_KEY = 'sk_test_jaIdMJOlkcUG6QpXV5wAJxXT005aZAJVM1' # For Django Backend
 
 # For Email Notification
-EMAIL_BACKEND = 'django.core.mail.backends.group8isbest.EmailBackend'
-EMAIL_HOST = 'group8isbest.gmail.com'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'group8isbest@gmail.com'
-EMAIL_HOST_PASSWORD = 'IntroSE123'
-EMAIL_PORT = 587
+EMAIL_HOST_PASSWORD = 'bzhm pofi ntwh wlix'
+EMAIL_PORT = 465
 EMAIL_USE_TLS = True
-DEFAULT_EMAIL_FROM = 'NetDeals <YOUR-EMAIL>'
-
+DEFAULT_EMAIL_FROM = 'NetDeals <group8isbest@gmail.com>'
+EMAIL_USE_SSL = True
+EMAIL_USE_TLS = False
 AUTH_USER_MODEL = "accounts.CustomUser"
 swappable = 'AUTH_USER_MODEL'

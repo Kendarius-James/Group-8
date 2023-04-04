@@ -10,7 +10,9 @@ from accounts.forms import SellerUserCreationForm
 ##
 from product.models import Product
 from .forms import ProductForm
-
+#redirect if user is not seller trying to do seller actions
+from django.shortcuts import redirect, render
+from django.contrib import messages
 # Converting Title into Slug
 from django.utils.text import slugify
 
@@ -52,6 +54,8 @@ def become_seller(request):
 
 @login_required
 def seller_dashboard(request):
+    if request.user.role != 'seller':
+        return redirect('core:home') 
     seller = request.user.sellerprofile
     products = seller.products.all()
     orders = seller.orders.all()
@@ -73,6 +77,11 @@ def seller_dashboard(request):
 
 @login_required
 def add_product(request):
+     
+    if request.user.role != 'seller':
+        messages.error(request, 'You do not have permission to create a product listing. Only sellers can create listings.')
+        return redirect('core:home') 
+
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES)
 
@@ -92,6 +101,8 @@ def add_product(request):
 
 @login_required
 def edit_seller(request):
+    if request.user.role != 'seller':
+        return redirect('core:home') 
 
     seller_profile = request.user.sellerprofile
     if request.method == 'POST':

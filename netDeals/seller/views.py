@@ -1,11 +1,10 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth import login
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from accounts.models import SellerProfile
-from accounts.forms import CustomUserCreationForm
-from accounts.forms import SellerUserCreationForm
+from accounts.forms import CustomUserCreationForm, SellerUserCreationForm
 from product.models import Product
+from .decorators import is_seller_approved
 from .forms import ProductForm
 from django.shortcuts import redirect, render #redirect if user is not seller trying to do seller actions
 from django.contrib import messages
@@ -18,6 +17,9 @@ def sellers(request):
 def approved_sellers(request):
     sellers = SellerProfile.objects.filter(is_approved=True)
     return render(request, 'seller/approved_sellers.html', {'sellers': sellers})
+
+def restricted_access(request):
+    return render(request, 'seller/restricted_access.html')
 
 def become_seller(request):
     if request.method == 'POST':
@@ -47,6 +49,7 @@ def become_seller(request):
 
 
 @login_required
+@is_seller_approved
 def seller_dashboard(request):
     if request.user.role != 'seller':
         return redirect('core:home') 
@@ -70,6 +73,7 @@ def seller_dashboard(request):
     return render(request, 'seller/seller_dashboard.html', {'seller': seller, 'products': products, 'orders': orders})
 
 @login_required
+@is_seller_approved
 def add_product(request):
      
     if request.user.role != 'seller':
@@ -94,6 +98,7 @@ def add_product(request):
 
 
 @login_required
+@is_seller_approved
 def edit_seller(request):
     if request.user.role != 'seller':
         return redirect('core:home') 

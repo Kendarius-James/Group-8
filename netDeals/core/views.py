@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from product.models import Product
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 # Create your views here.
@@ -31,7 +33,9 @@ def login_redirect(request):
                 return HttpResponseRedirect(reverse('core:home'))
         else:
             # Handle failed authentication here
-            pass
+            messages.error(request, 'Invalid username or password')
+            return render(request, 'core/login.html', {'form': form})
     else:
         # Render the login form here
-        pass
+        form = AuthenticationForm()
+        return render(request, 'core/login.html', {'form': form})

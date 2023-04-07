@@ -236,29 +236,30 @@
     {% endblock scripts %}
     {% block extra_js %}{% endblock %}
     <script>
-       function clearComparison() 
-       {
-            fetch('{% url "product:compare-clear" %}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': '{{ csrf_token }}',
-                },
-            })
-            .then((response) => {
-                if (response.ok) {
-                    sessionStorage.removeItem("product_to_compare");
-                    location.reload();
-                } else {
-                    console.error('Failed to clear comparison');
-                }
-            })
-            .catch((error) => {
-                console.error('Error clearing comparison:', error);
-            });
-        }
-        function compareProduct(productID) 
-        {
+           function clearComparison() {
+                fetch('{% url "product:compare-clear" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    },
+                })
+                .then((response) => {
+                    if (response.ok) {
+                        sessionStorage.removeItem("product_to_compare");
+                        const originalProductUrl = sessionStorage.getItem("original_product_url");
+                        sessionStorage.removeItem("original_product_url");
+                        window.location.href = originalProductUrl;
+                    } else {
+                        console.error('Failed to clear comparison');
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error clearing comparison:', error);
+                });
+            }
+            
+        function compareProduct(productID) {
             let productToCompare = sessionStorage.getItem("product_to_compare");
             if (productToCompare) {
                 // Fetch comparison data and show overlay
@@ -272,12 +273,14 @@
                     });
             } else {
                 sessionStorage.setItem("product_to_compare", productID);
-                displayComparisonBanner(productID);
+                sessionStorage.setItem("original_product_url", window.location.href);
+                window.location.href = '/?compare_banner=1';
             }
-            
         }
-        function displayComparisonBanner(productID) 
-        {
+
+
+    
+        function displayComparisonBanner(productID) {
             fetch('/product/get_product_name/' + productID)
                 .then(response => response.text())
                 .then(productName => {
@@ -291,40 +294,47 @@
                     console.error('Error fetching product name:', error);
                 });
         }
-        //product comparison overlay
-        function showComparisonOverlay(content) 
-        {
+    
+        // Product comparison overlay
+        function showComparisonOverlay(content) {
             const comparisonOverlay = document.getElementById('comparison-overlay');
             const comparisonContent = document.getElementById('comparison-content');
             comparisonContent.innerHTML = content;
             comparisonOverlay.classList.remove('hidden');
-
         }
-
-        function hideComparisonOverlay() 
-        {
+    
+        function hideComparisonOverlay() {
             clearComparison();
             const comparisonOverlay = document.getElementById('comparison-overlay');
             comparisonOverlay.classList.add('hidden');
-
+    
             // Show main content
             document.getElementById('main-content').style.display = 'block';
         }
-
+    
         // Add event listener for closing the comparison overlay
-        document.addEventListener('DOMContentLoaded', function () 
-        {
-            const comparisonClose = document.getElementById('comparison-close');
-            comparisonClose.addEventListener('click', function () 
-            {
-                hideComparisonOverlay();
-            });
+        document.addEventListener("DOMContentLoaded", function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const displayCompareBanner = urlParams.get('compare_banner');
+    
+            if (displayCompareBanner === '1') {
+                const productID = sessionStorage.getItem("product_to_compare");
+                if (productID) {
+                    displayComparisonBanner(productID);
+                }
+            }
         });
+    
+        function closeComparisonOverlay() {
+            clearComparison();
+            const overlay = document.getElementById('comparison-overlay');
+            overlay.style.display = 'none';
+        }
     </script>
     <!-- comparison pop up -->
     <div id="comparison-overlay" class="comparison-overlay hidden">
         <div class="comparison-container">
-            <button id="comparison-close" class="comparison-close">×</button>
+            <button id="comparison-close" class="comparison-close" onclick="closeComparisonOverlay()">×</button>
             <div id="comparison-content" class="comparison-content"></div>
         </div>
     </div>

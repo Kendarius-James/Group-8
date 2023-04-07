@@ -34,7 +34,7 @@
                                     <a href="{% url 'product:product' item.product.category.slug item.product.slug %}">{{item.product.title}}</a>
                                 </td>
                                 <td>
-                                    ${{item.quantity}}
+                                    {{item.quantity}}
 
                                     <a href="?change_quantity={{ item.id }}&quantity=-1">-</a>
                                     <a href="?change_quantity={{ item.id }}&quantity=1">+</a>

@@ -9,8 +9,10 @@ from django.urls import reverse
 
 def frontpage(request):
     newest_products = Product.objects.all()[0:8]
+    products = Product.objects.all()
     context = {
         'newest_products': newest_products,
+        'products': products,
     }
     return render(request, 'core/frontpage.html', context)
 

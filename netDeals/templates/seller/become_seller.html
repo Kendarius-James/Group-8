@@ -1,0 +1,50 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Become Seller {% endblock title %}
+
+{% block content %}
+
+    <h1 class="title">Become Seller</h1>
+
+    <form method="post" action="">
+        {% csrf_token %}
+
+        {{ user_form.as_p }}
+        {{ profile_form.as_p }}
+
+        
+        <!-- {{ form.email.label_tag }}
+        <br>
+        {{ form.email}}
+        <br>
+        {{ form.username.label_tag }}
+        <br>
+        {{ form.username}}
+        <br>
+        {{ form.address.label_tag }}
+        <br>
+        {{ form.address}}
+        <br>
+        {{ form.company_description.label_tag }}
+        <br>
+        {{ form.company_description}}
+        <br>
+        {{ form.password1.label_tag }}
+        <br>
+        {{ form.password1}}
+        <br>
+        {{ form.password2.label_tag }}
+        <br>
+        {{ form.password2}}
+        <br> -->
+        <!-- everything abover here added -->
+        <br>
+        <br>
+        <br>
+        <div class="field">
+            <div class="control">
+                <button class="button is-dark is-uppercase">Sign Up</button>
+            </div>
+        </div>
+    </form>
+{% endblock content %}

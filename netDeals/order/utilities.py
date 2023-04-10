@@ -8,7 +8,18 @@ from django.template.loader import render_to_string
 from .models import Order, OrderItem
 
 def checkout(request, first_name, last_name, email, address, zipcode, place, phone, amount):
-    order = Order.objects.create(first_name=first_name, last_name=last_name, email=email, address=address, zipcode=zipcode, place=place, phone=phone, paid_amount=amount)
+    # Initialize buyer and seller as None
+    buyer, seller = None, None
+
+    # Check user's role and set the respective profile
+    if request.user.role == 'buyer':
+        buyer = request.user.buyerprofile
+        seller = None
+    else:
+        buyer = None
+        seller = request.user.sellerprofile
+
+    order = Order.objects.create(first_name=first_name, last_name=last_name, email=email, address=address, zipcode=zipcode, place=place, phone=phone, paid_amount=amount, buyer=buyer, seller=seller)
 
     for item in Cart(request):
         OrderItem.objects.create(order=order, product=item['product'], seller=item['product'].seller, price=item['product'].price, quantity=item['quantity'])

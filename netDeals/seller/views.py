@@ -6,7 +6,7 @@ from accounts.forms import CustomUserCreationForm, SellerUserCreationForm
 from product.models import Product
 from .decorators import is_seller_approved
 from .forms import ProductForm
-import sys
+from order.models import Order, OrderItem
 from django.shortcuts import redirect, render #redirect if user is not seller trying to do seller actions
 from django.contrib import messages
 from django.utils.text import slugify# Converting Title into Slug
@@ -48,6 +48,17 @@ def become_seller(request):
     context = {'user_form': user_form, 'profile_form': profile_form}
     return render(request, 'seller/become_seller.html', context)
 
+@login_required
+def order_history(request):
+    seller = request.user.sellerprofile
+    orders = Order.objects.filter(seller=seller).prefetch_related('items')
+
+    # Filter items for each order
+    for order in orders:
+        order.filtered_items = order.items.all()
+
+    return render(request, 'seller/order_history.html', {'seller': seller, 'orders': orders})
+
 
 @login_required
 @is_seller_approved
@@ -56,22 +67,23 @@ def seller_dashboard(request):
         return redirect('core:home') 
     seller = request.user.sellerprofile
     products = seller.products.all()
-    orders = seller.orders.all()
-    for order in orders:
-        order.seller_amount = 0
-        order.seller_paid_amount = 0
-        order.fully_paid = True
+    sold_items = OrderItem.objects.filter(seller=seller)
+    
 
-        for item in order.items.all():
-            if item.seller == request.user.sellerprofile:
-                if item.seller_paid:
-                    order.seller_paid_amount += item.get_total_price()
-                else:
-                    order.seller_amount += item.get_total_price()
-                    order.fully_paid = False
+    #orders = Order.objects.filter(seller=seller).prefetch_related('items')
+    # for order in orders:
+    #     order.filtered_items = order.items.all()
+
+    #     for item in order.items.all():
+    #         if item.seller == request.user.sellerprofile:
+    #             if item.seller_paid:
+    #                 order.seller_paid_amount += item.get_total_price()
+    #             else:
+    #                 order.seller_amount += item.get_total_price()
+    #                 order.fully_paid = False
 
 
-    return render(request, 'seller/seller_dashboard.html', {'seller': seller, 'products': products, 'orders': orders})
+    return render(request, 'seller/seller_dashboard.html', {'seller': seller, 'products': products, 'sold_items': sold_items})
 
 @login_required
 @is_seller_approved

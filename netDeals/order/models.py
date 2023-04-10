@@ -1,6 +1,8 @@
 from django.db import models
 from product.models import Product
 from accounts.models import SellerProfile
+from accounts.models import BuyerProfile
+
 
 # Create your models here.
 class Order(models.Model):
@@ -14,6 +16,10 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     paid_amount = models.DecimalField(max_digits=8, decimal_places=2)
     sellers = models.ManyToManyField(SellerProfile, related_name="orders")
+    buyer = models.ForeignKey(BuyerProfile, null=True, blank=True, on_delete=models.SET_NULL, related_name='buyer_orders')
+    seller = models.ForeignKey(SellerProfile, null=True, blank=True, on_delete=models.SET_NULL, related_name='seller_orders')
+
+
 
     class Meta:
         ordering = ['-created_at']

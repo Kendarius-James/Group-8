@@ -15,7 +15,7 @@
             <h1 class="title">{{product.title}}, ${{product.price}}</h1>
 
             <p class="mb-6">
-                <span class="tag is-dark">{{ product.vendor.name }}</span>
+                <span class="tag is-dark">{{ product.seller.name }}</span>
             </p>
 
             <p>{{product.description}}</p>
@@ -27,6 +27,10 @@
                     <div class="notification is-success is-toast">{{ message }}</div>
                 {% endfor %}
             {% endif %}
+            <!-- button for compare listing -->
+            <button type="button" class="button is-primary" onclick="compareProduct({{ product.pk }})">Compare</button>
+            <br>
+            <br>
 
             <form method="post" action="">
                 {% csrf_token %}

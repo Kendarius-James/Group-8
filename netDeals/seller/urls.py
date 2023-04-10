@@ -2,12 +2,15 @@ from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
 from django.views.generic import TemplateView
+from core.views import login_redirect
+
 
 
 app_name = 'seller'
 
 
 urlpatterns = [
+    path('login/', login_redirect, name="login"),
     path('', views.sellers, name="sellers"),
     path('restricted_access/', views.restricted_access, name='restricted_access'),
     path('become-seller/', views.become_seller, name="become-seller"),

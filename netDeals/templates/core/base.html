@@ -1,5 +1,5 @@
 {% load static %}
-
+{% load product_filters %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,6 +13,7 @@
 
 </head>
 <body>
+    <!-- div for main content -->
 
     <div class="container px-4">
         <nav class="navbar px-4" role="navigation" aria-label="main navigation">
@@ -33,17 +34,12 @@
                 <a class="navbar-item" href="{% url 'core:home' %}">
                     Home
                 </a>
-                
                 {% for category in categories %}
                     <a class="navbar-item" href="{% url 'product:category' category.slug %}">
                         {{category.title}}
                     </a>
                 {% endfor %}
-
-                
-
                 </div>
-
                 <div class="navbar-start">
                     <div class="navbar-item">
                         <form method="get" action="{% url 'product:search' %}">
@@ -130,7 +126,42 @@
     </div>
 
     <style>
+        .comparison-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .comparison-container {
+            position: relative;
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 90%;
+            max-height: 90%;
+            overflow: auto;
+        }
+
+        .comparison-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .hidden {
+            display: none;
+        }
        .navbar {
+        z-index: 1000; 
         background-color: #f5f5f5; /* Soft color */
         border-radius: 1rem 1rem 0 0;
         margin-bottom: 1rem;
@@ -160,6 +191,16 @@
         }
     </style>
 
+    <div class="container is-fluid">
+        {% if request.session.product_to_compare %}
+            {% with product_to_compare=products|get_item:request.session.product_to_compare %}
+                <div class="notification is-info mt-2">
+                    <strong>Comparing:</strong> {{ product_to_compare.name }} Please select another product to compare.
+                    <button class="delete" onclick="clearComparison()"></button>
+                </div>
+            {% endwith %}
+        {% endif %}
+    </div>
     <section class="section">
         <div class="container">
             {% block content %}{% endblock content %}
@@ -172,7 +213,8 @@
             </div>
         </section>
     </div>
-    
+
+
     <footer class="footer">
         <div class="container">
             <h3 class="is-size-4 mb-4">NetDeals</h3>
@@ -187,10 +229,114 @@
 
         </div>
     </footer>
+<!-- div for main content -->
 
     <script src="{% static 'js/main.js' %}"></script>
     {% block scripts %}
     {% endblock scripts %}
+    {% block extra_js %}{% endblock %}
+    <script>
+           function clearComparison() {
+                fetch('{% url "product:compare-clear" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    },
+                })
+                .then((response) => {
+                    if (response.ok) {
+                        sessionStorage.removeItem("product_to_compare");
+                        const originalProductUrl = sessionStorage.getItem("original_product_url");
+                        sessionStorage.removeItem("original_product_url");
+                        window.location.href = originalProductUrl;
+                    } else {
+                        console.error('Failed to clear comparison');
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error clearing comparison:', error);
+                });
+            }
+            
+        function compareProduct(productID) {
+            let productToCompare = sessionStorage.getItem("product_to_compare");
+            if (productToCompare) {
+                // Fetch comparison data and show overlay
+                fetch('{% url "product:compare" 0 %}'.replace('0', productToCompare) + '?product2=' + productID)
+                    .then(response => response.text())
+                    .then(data => {
+                        showComparisonOverlay(data);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching comparison data:', error);
+                    });
+            } else {
+                sessionStorage.setItem("product_to_compare", productID);
+                sessionStorage.setItem("original_product_url", window.location.href);
+                window.location.href = '/?compare_banner=1';
+            }
+        }
 
+
+    
+        function displayComparisonBanner(productID) {
+            fetch('/product/get_product_name/' + productID)
+                .then(response => response.text())
+                .then(productName => {
+                    const notification = document.createElement('div');
+                    notification.className = 'notification is-info mt-2';
+                    notification.innerHTML = `<strong>Comparing:</strong> ${productName} Please select another product to compare. <button class="delete" onclick="clearComparison()"></button>`;
+                    const container = document.querySelector('.container.is-fluid');
+                    container.appendChild(notification);
+                })
+                .catch(error => {
+                    console.error('Error fetching product name:', error);
+                });
+        }
+    
+        // Product comparison overlay
+        function showComparisonOverlay(content) {
+            const comparisonOverlay = document.getElementById('comparison-overlay');
+            const comparisonContent = document.getElementById('comparison-content');
+            comparisonContent.innerHTML = content;
+            comparisonOverlay.classList.remove('hidden');
+        }
+    
+        function hideComparisonOverlay() {
+            clearComparison();
+            const comparisonOverlay = document.getElementById('comparison-overlay');
+            comparisonOverlay.classList.add('hidden');
+    
+            // Show main content
+            document.getElementById('main-content').style.display = 'block';
+        }
+    
+        // Add event listener for closing the comparison overlay
+        document.addEventListener("DOMContentLoaded", function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const displayCompareBanner = urlParams.get('compare_banner');
+    
+            if (displayCompareBanner === '1') {
+                const productID = sessionStorage.getItem("product_to_compare");
+                if (productID) {
+                    displayComparisonBanner(productID);
+                }
+            }
+        });
+    
+        function closeComparisonOverlay() {
+            clearComparison();
+            const overlay = document.getElementById('comparison-overlay');
+            overlay.style.display = 'none';
+        }
+    </script>
+    <!-- comparison pop up -->
+    <div id="comparison-overlay" class="comparison-overlay hidden">
+        <div class="comparison-container">
+            <button id="comparison-close" class="comparison-close" onclick="closeComparisonOverlay()">×</button>
+            <div id="comparison-content" class="comparison-content"></div>
+        </div>
+    </div>
 </body>
 </html>

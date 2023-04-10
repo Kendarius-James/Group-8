@@ -6,6 +6,7 @@ from accounts.forms import CustomUserCreationForm, SellerUserCreationForm
 from product.models import Product
 from .decorators import is_seller_approved
 from .forms import ProductForm
+import sys
 from django.shortcuts import redirect, render #redirect if user is not seller trying to do seller actions
 from django.contrib import messages
 from django.utils.text import slugify# Converting Title into Slug
@@ -90,7 +91,6 @@ def add_product(request):
             product.save() #finally save
 
             return redirect('seller:seller-dashboard')
-
     else:
         form = ProductForm
 

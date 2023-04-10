@@ -3,8 +3,9 @@ from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 #added trying to get buyeruser to work
-from accounts.models import SellerProfile
+from accounts.models import BuyerProfile
 ##
+from order.models import Order
 from accounts.forms import CustomUserCreationForm
 from accounts.forms import BuyerUserCreationForm
 ##
@@ -59,10 +60,21 @@ def edit_buyer(request):
 
     return render(request, 'buyer/edit_buyer.html', context)
 
-# def buyers(request):
-#     buyers = BuyerProfile.objects.all()
-#     return render(request, 'buyer/buyers.html', {'buyers': buyers})
+def buyers(request):
+    buyers = BuyerProfile.objects.all()
+    return render(request, 'buyer/buyers.html', {'buyers': buyers})
 
-# def buyer(request, buyer_id):
-#     buyer = get_object_or_404(BuyerProfile, pk=buyer_id)
-#     return render(request, 'buyer/buyer.html', {'buyer': seller})
+def buyer(request, buyer_id):
+    buyer = get_object_or_404(BuyerProfile, pk=buyer_id)
+    return render(request, 'buyer/buyer.html', {'buyer': buyer})
+
+@login_required
+def order_history(request):
+    buyer = request.user.buyerprofile
+    orders = Order.objects.filter(buyer=buyer).prefetch_related('items')
+
+    # Filter items for each order
+    for order in orders:
+        order.filtered_items = order.items.all()
+
+    return render(request, 'buyer/order_history.html', {'buyer': buyer, 'orders': orders})

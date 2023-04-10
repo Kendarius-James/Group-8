@@ -4,7 +4,7 @@
 
 {% block content %}
 
-    <h1 class="title">Seller Dashboard - <span class="is-capitalized">{{sellerprofile.name}}</span></h1>
+    <h1 class="title">Dashboard<span class="is-capitalized">{{sellerprofile.name}}</span></h1>
 
     <div class="mb-5">
         <strong>My Balance: </strong> ${{sellerprofile.get_balance}} <br>
@@ -47,54 +47,80 @@
     </div>
 
     <div class="box">
-        <h2 class="is-size-3 mb-4">My Orders</h2>
+        <h2 class="is-size-3 mb-4">Customer Orders</h2>
+        {% if sold_items %}
+                
+        <table class="table is-fullwidth">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>First Name</th>
+                    <th>Order Number</th>
+                    <th></th>
+                </tr>
+            </thead>
 
-        {% if orders %}
-            {% for order in orders %}
-                <div class="{% if order.fully_paid %}has-background-success-light{% else %}has-background-info-light{% endif %} mb-2 p-4">
-                    <div class="columns is-multiline">
-                        <div class="column is-6">
-                            <h3 class="is-size-4">#{{ order.id }} - {{ order.first_name }} {{ order.last_name }}</h3>
-                        </div>
-    
-                        <div class="column is-12">
-                            <b>Name:</b> {{ order.first_name }} {{ order.last_name }}<br>
-                            <b>Address:</b> {{ order.address }}<br>
-                            <b>Zip and place:</b> {{ order.zipcode }} {{ order.place }}<br>
-                            <b>E-mail:</b> {{ order.email }}<br>
-                            <b>Phone:</b> {{ order.phone }}
-    
-                            <table class="table is-fullwidth mt-4">
-                                <thead>
-                                    <tr>
-                                        <th>Title</th>
-                                        <th>Price</th>
-                                        <th>Quantity</th>
-                                        <th>Paid</th>
-                                        <th>Total</th>
-                                    </tr>
-                                </thead>
-    
-                                <tbody>
-                                    {% for item in order.items.all %}
-                                        {% if item.seller == request.user.sellerprofile %}
-                                            <tr>
-                                                <td>{{ item.product.title }}</td>
-                                                <td>${{ item.product.price }}</td>
-                                                <td>{{ item.quantity }}</td>
-                                                <td>{{ item.seller_paid|yesno:"Yes,No" }}</td>
-                                                <td>${{ item.get_total_price }}</td>
-                                            </tr>
-                                        {% endif %}
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
+            <tbody>
+                {% for item in sold_items %}
+                    <tr>
+                        <td>{{ item.product.title }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.price }}</td>
+                        <td>{{ item.order.first_name }}</td>
+                        <td>{{ item.order.id }}</td>
+                        <td>
+                            <div class="button-container">
+                              <button class="button is-dark is-uppercase is-small more-info-btn" data-detail-id="detail-{{ item.id }}" id="more-info-{{ item.id }}">More Info</button>
+                            </div>
+                          </td>                    
+                    </tr>
+
+                    <tr class="hidden" id="detail-{{ item.id }}">
+                        <td colspan="2">
+                            <strong>Address:</strong> {{ item.order.address }}<br>
+                            <strong>Phone:</strong> {{ item.order.phone }}<br>
+                            <strong>Zipcode:</strong> {{ item.order.zipcode }}<br>
+                            <strong>Email:</strong> {{ item.order.email }}<br>
+                        </td>
+                        <td colspan="2">
+                            <strong>First Name:</strong> {{ item.order.address }}<br>
+                            <strong>Last Name:</strong> {{ item.order.phone }}<br>
+                            <strong>Date Placed:</strong> {{ item.order.created_at }}<br>
+                            <strong>Paid Amount:</strong> {{ item.order.paid_amount }}<br>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% else %}
+        <p class="has-text-danger">nothing sold yet</p>
         {% endif %}
+    
+    </div>
 
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const moreInfoButtons = document.querySelectorAll('.more-info-btn');
+            moreInfoButtons.forEach(function (button) {
+                button.addEventListener('click', function () {
+                    const detailId = this.getAttribute('data-detail-id');
+                    const detailRow = document.getElementById(detailId);
+                    if (detailRow.classList.contains('hidden')) {
+                        detailRow.classList.remove('hidden');
+                    } else {
+                        detailRow.classList.add('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+
+
+
 {% endblock content %}
+

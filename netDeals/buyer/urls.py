@@ -11,6 +11,7 @@ urlpatterns = [
     path('become-buyer/', views.become_buyer, name="become-buyer"),
     # path('seller-admin/', views.seller_admin, name="seller-admin"),
     path('edit-buyer/', views.edit_buyer, name="edit-buyer"),
+    path('order-history/', views.order_history, name="order-history"),
 
     # path('add-product/', views.add_product, name="add-product"),
 

@@ -70,7 +70,10 @@
 
                     <div class="navbar-dropdown">
                     <a class="navbar-item" href="{% url 'seller:seller-dashboard' %}">
-                        Profile
+                        Dashboard
+                    </a>
+                    <a class="navbar-item" href="{% url 'seller:order-history' %}">
+                        Order History
                     </a>
                     <a class="navbar-item" href="{% url 'seller:edit-seller' %}">
                         Update Profile
@@ -89,11 +92,11 @@
 
                 <div class="navbar-item has-dropdown is-hoverable">
                     <a class="navbar-link is-capitalized">
-                    {{user.seller.name}}
+                    {{user.buyer.name}}
                     </a>
                     <!-- All of these need to be updated! new pages will need to be made in templates pages -->
                     <div class="navbar-dropdown">
-                    <a class="navbar-item" href="{% url 'seller:seller-dashboard' %}">
+                    <a class="navbar-item" href="{% url 'buyer:order-history' %}">
                         Order History
                     </a>
                     <a class="navbar-item" href="{% url 'buyer:edit-buyer' %}">

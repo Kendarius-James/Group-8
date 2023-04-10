@@ -1,25 +1,22 @@
 from django.shortcuts import render
+#from .forms import RegistrationForm
+from django.shortcuts import render, redirect
 from product.models import Product
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-# Create your views here.
+from django.contrib.auth.decorators import login_required
 
-def frontpage(request):
-    newest_products = Product.objects.all()[0:8]
-    products = Product.objects.all()
-    context = {
-        'newest_products': newest_products,
-        'products': products,
-    }
-    return render(request, 'core/frontpage.html', context)
+def password_reset_complete(request):
+    return render(request, 'password_reset_complete.html')
 
+def login(request):
+    text =  reverse("login.html")
+    return render(text)
 
-def contactpage(request):
-    return render(request, 'core/contact.html')
-
+#remove later
 def login_redirect(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -35,7 +32,6 @@ def login_redirect(request):
                 return HttpResponseRedirect(reverse('core:home'))
         else:
             # Handle failed authentication here
-            form = AuthenticationForm()
             messages.error(request, 'Invalid username or password')
             return render(request, 'core/login.html', {'form': form})
     else:

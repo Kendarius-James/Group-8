@@ -35,6 +35,7 @@ def login_redirect(request):
                 return HttpResponseRedirect(reverse('core:home'))
         else:
             # Handle failed authentication here
+            form = AuthenticationForm()
             messages.error(request, 'Invalid username or password')
             return render(request, 'core/login.html', {'form': form})
     else:

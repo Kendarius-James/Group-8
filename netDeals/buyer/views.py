@@ -40,7 +40,7 @@ def become_buyer(request):
         profile_form = BuyerUserCreationForm() 
 
     context = {'user_form': user_form, 'profile_form': profile_form}
-    return render(request, 'seller/become_seller.html', context)
+    return render(request, 'buyer/become_buyer.html', context)
 
 @login_required
 def edit_buyer(request):

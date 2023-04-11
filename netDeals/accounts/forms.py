@@ -5,7 +5,7 @@ from .models import CustomUser, BuyerProfile, SellerProfile
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = CustomUser
-        fields = ('email', 'role',)
+        fields = ('email',)
 
 class BuyerUserCreationForm(forms.ModelForm):
     class Meta:

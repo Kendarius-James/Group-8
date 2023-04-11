@@ -5,6 +5,10 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
+from django.contrib.messages import constants as messages_constants
+
 # Create your views here.
 
 def frontpage(request):
@@ -21,24 +25,29 @@ def contactpage(request):
     return render(request, 'core/contact.html')
 
 def login_redirect(request):
+    form = AuthenticationForm()
+    invalid_email = False
+
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        
-        if user is not None:
-            login(request, user)
-            if user.is_superuser:
-                return HttpResponseRedirect(reverse('admin:index'))
+
+        try:
+            validate_email(username)
+        except ValidationError:
+            invalid_email = True
+            messages.warning(request, 'Invalid email format')
+
+        if not invalid_email:
+            user = authenticate(request, username=username, password=password)
+            
+            if user is not None:
+                login(request, user)
+                if user.is_superuser:
+                    return HttpResponseRedirect(reverse('admin:index'))
+                else:
+                    return HttpResponseRedirect(reverse('core:home'))
             else:
-                # Redirect to the appropriate page for other user roles
-                return HttpResponseRedirect(reverse('core:home'))
-        else:
-            # Handle failed authentication here
-            form = AuthenticationForm()
-            messages.error(request, 'Invalid username or password')
-            return render(request, 'core/login.html', {'form': form})
-    else:
-        # Render the login form here
-        form = AuthenticationForm()
-        return render(request, 'core/login.html', {'form': form})
+                messages.error(request, 'Invalid username or password')
+
+    return render(request, 'core/login.html', {'form': form})

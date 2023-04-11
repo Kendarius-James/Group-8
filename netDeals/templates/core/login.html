@@ -3,8 +3,118 @@
 {% block title %}Login{% endblock title %}
 
 {% block content %}
+<div class="login-box">
+    
+    <h1><strong>Login</strong></h1>
 
-    <h1 class="title">Login</h1>
+    <form method="post" action="">
+
+        {% csrf_token %}
+
+        {% if messages %}
+        {% for message in messages %}
+            <div class="notification {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}is-danger{% elif message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}is-warning{% endif %}">
+                <ul>
+                    <li>{{ message }}</li>
+                </ul>
+            </div>
+        {% endfor %}
+        {% endif %}
+
+      <div class="user-box">
+        {{form.username}}
+        <label for="id_email">Email</label>
+      </div>
+      <div class="user-box">
+        {{form.password}}
+        <label>Password</label>
+      </div>
+        <a href = "{% url 'core:password_reset_form' %}">Forgot Password</a>
+        <br>
+        <br>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+
+        <button class="button is-dark is-uppercase">Log In</button>
+    </form>
+
+</div>
+
+<style>
+
+    html {
+    height: 100%;
+    }
+
+    body {
+        font-family: sans-serif;
+        font-size: large;
+    }
+
+    .login-box {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 400px;
+        padding: 40px;
+        transform: translate(-50%, -50%);
+        background: rgba(241, 241, 241, 0.5);
+        box-sizing: border-box;
+        box-shadow: 0 15px 25px rgba(0,0,0,.6);
+        border-radius: 10px;
+    }
+
+    .login-box h1 {
+        margin: 0 0 30px;
+        padding: 0;
+        color: #000000;
+        text-align: center;
+    }
+
+    .login-box .user-box {
+        position: relative;
+    }
+
+    .login-box .user-box input {
+        width: 100%;
+        padding: 10px 0;
+        font-size: 16px;
+        color: #000000;
+        margin-bottom: 30px;
+        border: none;
+        border-bottom: 1px solid #000000;
+        outline: none;
+        background: transparent;
+    }
+    
+    .login-box .user-box label {
+        position: absolute;
+        top:0;
+        left: 0;
+        padding: 10px 0;
+        font-size: 16px;
+        color: #000000;
+        pointer-events: none;
+        transition: .5s;
+    }
+
+    .login-box .user-box input:focus ~ label,
+    .login-box .user-box input:valid ~ label {
+        top: -20px;
+        left: 0;
+        color: #202020;
+        font-size: 12px;
+    }
+
+    .login-box a span {
+        position: absolute;
+        display: block;
+    }
+
+</style>
+    <!-- <h1 class="title">Login</h1>
 
     <form method="post" action="">
         {% csrf_token %}
@@ -17,5 +127,5 @@
                 <button class="button is-dark is-uppercase">Log In</button>
             </div>
         </div>
-    </form>
+    </form> -->
 {% endblock content %}

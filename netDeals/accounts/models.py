@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
+from django.apps import apps
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -58,3 +59,17 @@ class SellerProfile(models.Model):
 
     def __str__(self):
         return self.company_name
+    
+    def get_balance(self):
+        print("Called get_balance function")
+        OrderItem = apps.get_model('order', 'OrderItem')
+        items_sold = OrderItem.objects.filter(seller_id=self.id)
+        print(f"Items sold: {items_sold}")  # Add this line
+        total_balance = sum(item.price * item.quantity for item in items_sold)
+        print(f"Total balance: {total_balance}")  # Add this line
+        return total_balance
+
+
+    # def get_paid_amount(self):
+    #     items = self.items.filter(buyer_paid=True, order__buyers__in=[self.id])
+    #     return sum((item.product.price * item.quantity) for item in items)

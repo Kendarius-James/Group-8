@@ -1,12 +1,13 @@
 import random # To get random products from the database
 from django.contrib import messages
 from django.shortcuts import redirect, render, get_object_or_404
-from .models import Category, Product
+from .models import Category, Product, ReviewRating
 from django.db.models import Q
 from django.http import JsonResponse
-from .forms import AddToCartForm
+from .forms import AddToCartForm, ReviewForm
 from cart.cart import Cart
 from django.http import HttpResponse
+from order.models import Order
 
 
 # Create your views here.
@@ -32,6 +33,9 @@ def product(request, category_slug, product_slug):
         form = AddToCartForm()
 
     similar_products = list(product.category.products.exclude(id=product.id))
+
+        # Get the reviews
+    reviews = ReviewRating.objects.filter(id=product.id, status=True)
 
     # If more than 4 similar products, then get 4 random products 
     if len(similar_products) >= 4:
@@ -82,3 +86,27 @@ def search(request):
     products = Product.objects.filter(Q(title__icontains=query) | Q(description__icontains=query))
 
     return render(request, 'product/search.html', {'products':products, 'query': query})
+
+
+def submit_review(request, product_id):
+    url = request.META.get('HTTP_REFERER')
+    if request.method == 'POST':
+        try:
+            reviews = ReviewRating.objects.get(pk=product_id)
+            review_form = ReviewForm(request.POST, instance=reviews)
+            review_form.save()
+            messages.success(request, 'Thank you! Your review has been updated.')
+            return redirect(url)
+        except ReviewRating.DoesNotExist:
+            review_form = ReviewForm(request.POST)
+            if review_form.is_valid():
+                data = ReviewRating()
+                data.subject = review_form.cleaned_data['subject']
+                data.rating = review_form.cleaned_data['rating']
+                data.review = review_form.cleaned_data['review']
+                data.ip = request.META.get('REMOTE_ADDR')
+                data.pk = product_id
+                data.user = request.user.id
+                data.save()
+                messages.success(request, 'Thank you! Your review has been submitted.')
+                return redirect(url)

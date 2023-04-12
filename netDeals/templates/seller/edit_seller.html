@@ -1,50 +1,68 @@
 {% extends 'core/base.html' %}
 
-{% block title %}Edit vendor | {% endblock %}
+{% block title %}Edit Account | {% endblock %}
 
 {% block content %}
-    <h1 class="title">Edit vendor</h1>
+    <h1 class="title">Edit Account</h1>
 
     <form method="post" action=".">
         {% csrf_token %}
-            {{ form.as_p }}
-        <!-- <div class="field">
-            <label>Vendor name</label>
 
-            <div class="control" >
-                <input type="text" name="name" id="id_name" value="{{ vendor.name }}" class="input">
+        {% if form.non_field_errors %}
+            <div class="notification is-danger">
+                {{ form.non_field_errors}}
             </div>
+        {% endif %}
 
-            <p class="help">This is not the same as the username!</p>
+        {% if user_form.errors %}
+            <div class="notification is-danger">
+                <ul>
+                    {% for field in user_form %}
+                        {% for error in field.errors %}
+                            <li><strong>{{field.label}}: </strong>{{error}}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <div class="columns">
+            <div class="column is-3">             
+                <div class="field">
+                    <label for="id_company_name">Company Name: </label>
+                    <br>
+                    {{ form.company_name }}
+                </div>
+
+                <div class="field">
+                    <label for="id_company_description">Company Description: </label>
+                    <br>
+                    {{ form.company_description }}
+                </div>
+
+                <div class="field">
+                    <label for="id_phone_number">Phone Number: </label>
+                    <br>
+                    {{ form.phone_number }}
+                </div>
+
+                <div class="field">
+                    <label for="id_address">Address: </label>
+                    <br>
+                    {{ form.address }}
+                </div>
+            </div>
         </div>
-        <div class="field">
-            <label>Company Description</label>
 
-            <div class="control">
-                <input type="text" name="company_description" id="id_email" value="{{ vendor.company_description }}" class="input">
-            </div>
-        </div>
-        <div class="field">
-            <label>Address</label>
-
-            <div class="control">
-                <input type="text" name="address" id="id_email" value="{{ vendor.address }}" class="input">
-            </div>
-        </div>
-        <div class="field">
-            <label>Phone number</label>
-
-            <div class="control">
-                <input type="text" name="phonenumber" id="id_email" value="{{ vendor.phonenumber }}" class="input">
-            </div>
-        </div>
-        <div class="field">
-            <label>E-mail</label>
-
-            <div class="control">
-                <input type="email" name="email" id="id_email" value="{{ vendor.created_by.email }}" class="input">
-            </div>
-        </div> -->
+            <style>
+                #id_company_name,#id_company_description, #id_address, #id_phone_number{
+                width: 100%;
+                padding: 8px 5px;
+                margin: 4px 0;
+                box-sizing: border-box;
+                }
+               
+            </style>
 
         <div class="field">
             <div class="control">

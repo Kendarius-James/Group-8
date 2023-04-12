@@ -15,7 +15,7 @@
             <h1 class="title">{{product.title}}, ${{product.price}}</h1>
 
             <p class="mb-6">
-                <span class="tag is-dark">{{ product.seller.name }}</span>
+                <a href="{% url 'seller:seller' product.seller.id %}" class="button is-primary ">{{product.seller.company_name}}</a>
             </p>
 
             <p>{{product.description}}</p>
@@ -28,7 +28,7 @@
                 {% endfor %}
             {% endif %}
             <!-- button for compare listing -->
-            <a href="{% url 'product:report_product' product_id=product.pk %}">Report Product</a>
+            <a href="{% url 'product:report_product' product_id=product.pk %}" class="button is-danger ">Report Product</a>
             <button type="button" class="button is-primary" onclick="compareProduct({{ product.pk }})">Compare</button>
             <br>
             <br>
@@ -59,7 +59,7 @@
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.1);
         border-radius: 1rem;
         padding: 2rem;
-        background-color: #ffffff;
+        background-color: #f3f0f0;
         }
     </style>
 

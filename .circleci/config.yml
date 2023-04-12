@@ -18,16 +18,17 @@ jobs:
     steps:
       - checkout
       - run:
-          name: "Say hello"
-          command: "echo Hello, World!"
+        #  name: "Say hello"
+        #  command: "echo Hello, World!"
+          name: "test"
+          command: ./manage.py test
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
 workflows:
-  say-hello-workflow:
-    jobs:
-      - say-hello
-
+  #say-hello-workflow:
+  #  jobs:
+  #    - say-hello
   example-workflow:
     jobs:
       - python/test

@@ -1,7 +1,7 @@
 from . import views
 from .views import clear_comparison
 from django.urls import path
-
+from .views import report_product
 
 
 app_name = 'product'
@@ -13,7 +13,8 @@ urlpatterns = [
     path('remove_compare/<int:product_id>/', views.remove_compare, name='remove_compare'),
     path('compare/<int:product_id>/', views.compare, name='compare'),
     path('search', views.search, name="search"),
+    path('report_product/<int:product_id>/', views.report_product, name='report_product'),
     path('<slug:category_slug>/<slug:product_slug>/', views.product, name="product"),
     path('<slug:category_slug>/', views.category, name="category"),
-    
+
 ]

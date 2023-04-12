@@ -7,7 +7,6 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
-from django.contrib.messages import constants as messages_constants
 
 # Create your views here.
 

@@ -2,7 +2,7 @@ from io import BytesIO
 from os import name
 from PIL import Image
 from django.core.files import File
-
+from accounts.models import CustomUser
 from django.db import models
 from accounts.models import SellerProfile
 
@@ -76,3 +76,12 @@ class Product(models.Model):
         return thumbnail
 
 
+class ProductReport(models.Model):
+    
+    listing = models.ForeignKey('product.Product', on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True)
+    reason = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Report {self.pk} - {self.listing}"

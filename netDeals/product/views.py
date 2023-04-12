@@ -7,7 +7,8 @@ from django.http import JsonResponse
 from .forms import AddToCartForm
 from cart.cart import Cart
 from django.http import HttpResponse
-
+from .models import ProductReport
+from .forms import ProductReportForm
 
 # Create your views here.
 def product(request, category_slug, product_slug):
@@ -82,3 +83,23 @@ def search(request):
     products = Product.objects.filter(Q(title__icontains=query) | Q(description__icontains=query))
 
     return render(request, 'product/search.html', {'products':products, 'query': query})
+
+def report_product(request, product_id):
+    if request.method == 'POST':
+        form = ProductReportForm(request.POST)
+        if form.is_valid():
+            report = form.save(commit=False)
+            report.product = Product.objects.get(pk=product_id)
+            report.listing_id = product_id  # Set the listing_id field value
+            if request.user.is_authenticated:  # Check if the user is authenticated
+                report.user = request.user
+            report.save()
+            product_instance = get_object_or_404(Product, pk=product_id)
+            category_slug = product_instance.category.slug
+            product_slug = product_instance.slug
+            return redirect('product:product', category_slug=category_slug, product_slug=product_slug)
+    else:
+        form = ProductReportForm()
+    return render(request, 'product/report_product.html', {'form': form, 'product_id': product_id})
+    
+    

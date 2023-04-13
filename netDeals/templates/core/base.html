@@ -165,7 +165,7 @@
         }
        .navbar {
         z-index: 1000; 
-        background-color: #cac6c6; /* Soft color */
+        background-color: #f3f0f0; /* Soft color */
         border-radius: 1rem 1rem 0 0;
         margin-bottom: 1rem;
         width: 100%;
@@ -239,7 +239,8 @@
     {% endblock scripts %}
     {% block extra_js %}{% endblock %}
     <script>
-           function clearComparison() {
+
+        function clearComparison() {
                 fetch('{% url "product:compare-clear" %}', {
                     method: 'POST',
                     headers: {
@@ -281,8 +282,6 @@
             }
         }
 
-
-    
         function displayComparisonBanner(productID) {
             fetch('/product/get_product_name/' + productID)
                 .then(response => response.text())

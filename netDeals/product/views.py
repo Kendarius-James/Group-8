@@ -20,7 +20,7 @@ def product(request, category_slug, product_slug):
     # Check whether the AddToCart button is clicked or not
     if request.method == 'POST':
         form = AddToCartForm(request.POST)
-
+        
         if form.is_valid():
             quantity = form.cleaned_data['quantity']
             cart.add(product_id=product.id, quantity=quantity, update_quantity=False)
@@ -37,11 +37,12 @@ def product(request, category_slug, product_slug):
     # If more than 4 similar products, then get 4 random products 
     if len(similar_products) >= 4:
         similar_products = random.sample(similar_products, 4)
-    
+    report_form = ProductReportForm()
     context = {
         'product': product,
         'similar_products': similar_products,
         'form': form,
+        'report_form': report_form,
     }
 
     return render(request, 'product/product.html', context)
@@ -86,9 +87,9 @@ def search(request):
 
 def report_product(request, product_id):
     if request.method == 'POST':
-        form = ProductReportForm(request.POST)
-        if form.is_valid():
-            report = form.save(commit=False)
+        report_form = ProductReportForm(request.POST)
+        if report_form.is_valid():
+            report = report_form.save(commit=False)
             report.product = Product.objects.get(pk=product_id)
             report.listing_id = product_id  # Set the listing_id field value
             if request.user.is_authenticated:  # Check if the user is authenticated
@@ -99,7 +100,7 @@ def report_product(request, product_id):
             product_slug = product_instance.slug
             return redirect('product:product', category_slug=category_slug, product_slug=product_slug)
     else:
-        form = ProductReportForm()
-    return render(request, 'product/report_product.html', {'form': form, 'product_id': product_id})
+        report_form = ProductReportForm()
+    return render(request, 'product/report_product.html', {'report_form': report_form, 'product_id': product_id}, content_type='text/html')
     
     

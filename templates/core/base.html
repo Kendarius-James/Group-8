@@ -1,0 +1,344 @@
+{% load static %}
+{% load product_filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> {% block title %}NetDeals{% endblock title %} </title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
+
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+
+</head>
+<body>
+    <!-- div for main content -->
+
+    <div class="container px-4">
+        <nav class="navbar px-4" role="navigation" aria-label="main navigation">
+            <div class="navbar-brand">
+                <a class="navbar-item" href="{% url 'core:home' %}">
+                    <h1><strong>NetDeals</strong></h1>
+                </a>
+
+                <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                </a>
+            </div>
+
+            <div id="navbarBasicExample" class="navbar-menu">
+                <div class="navbar-start">
+                <a class="navbar-item" href="{% url 'core:home' %}">
+                    Home
+                </a>
+                {% for category in categories %}
+                    <a class="navbar-item" href="{% url 'product:category' category.slug %}">
+                        {{category.title}}
+                    </a>
+                {% endfor %}
+                </div>
+                <div class="navbar-start">
+                    <div class="navbar-item">
+                        <form method="get" action="{% url 'product:search' %}">
+                            <div class="field has-addons">
+                                <div class="control">
+                                    <input type="search" name="query" id="" class="input" placeholder="Search...">
+                                </div>
+                                <div class="control">
+                                    <button class="button is-dark is-uppercase">Search</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="navbar-end">
+
+                <div class="navbar-item">
+                    <a href="{% url 'cart:cart' %}" class="button is-warning">Cart {% if cart %}({{cart|length}}){% endif %}</a>
+                </div>
+                
+                {% if user.role == 'seller' %}
+
+                <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link is-capitalized">
+                    {{user.seller.name}}
+                    </a>
+
+                    <div class="navbar-dropdown">
+                    <a class="navbar-item" href="{% url 'seller:seller-dashboard' %}">
+                        Dashboard
+                    </a>
+                    <a class="navbar-item" href="{% url 'seller:order-history' %}">
+                        Order History
+                    </a>
+                    <a class="navbar-item" href="{% url 'seller:edit-seller' %}">
+                        Update Profile
+                    </a>
+                    <a class="navbar-item" href="{% url 'seller:add-product' %}">
+                        Add Product
+                    </a>
+                    <hr class="navbar-divider">
+                    <a class="navbar-item" href="{% url 'seller:logout' %}">
+                        Logout
+                    </a>
+                    </div>
+                </div>
+
+                {% elif user.role == 'buyer' %}
+
+                <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link is-capitalized">
+                    {{user.buyer.name}}
+                    </a>
+                    <!-- All of these need to be updated! new pages will need to be made in templates pages -->
+                    <div class="navbar-dropdown">
+                    <a class="navbar-item" href="{% url 'buyer:order-history' %}">
+                        Order History
+                    </a>
+                    <a class="navbar-item" href="{% url 'buyer:edit-buyer' %}">
+                        Update Profile
+                    </a>
+                    <hr class="navbar-divider">
+                    <a class="navbar-item" href="{% url 'seller:logout' %}">
+                        Logout
+                    </a>
+                    </div>
+                </div>
+                {% else %}
+                <div class="navbar-item">
+                    <div class="buttons">
+                        <a class="button is-primary" href="{% url 'buyer:become-buyer' %}">
+                            <strong>Become Buyer</strong>
+                        </a>
+                        <a class="button is-primary" href="{% url 'seller:become-seller' %}">
+                            <strong>Become Seller</strong>
+                        </a>
+                        <a class="button is-light" href="{% url 'core:login' %}">
+                            Log in
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+                </div>
+            </div>
+            </nav>
+    </div>
+
+    <style>
+        .comparison-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .comparison-container {
+            position: relative;
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 90%;
+            max-height: 90%;
+            overflow: auto;
+        }
+
+        .comparison-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .hidden {
+            display: none;
+        }
+       .navbar {
+        z-index: 1000; 
+        background-color: #f3f0f0; /* Soft color */
+        border-radius: 1rem 1rem 0 0;
+        margin-bottom: 1rem;
+        width: 100%;
+        position: relative;
+        }
+
+        .navbar .input {
+        width: 400px; /* Longer search bar */
+        }
+
+        .navbar .field.has-addons {
+        width: 100%;
+        } 
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .main-content-wrapper {
+            flex-grow: 1;
+        }
+        .footer {
+            background-color: #f0f0f0; /* Soft gray color */
+            padding: 1rem 0; /* Add some padding for better appearance */
+        }
+    </style>
+
+    <div class="container is-fluid">
+        {% if request.session.product_to_compare %}
+            {% with product_to_compare=products|get_item:request.session.product_to_compare %}
+                <div class="notification is-info mt-2">
+                    <strong>Comparing:</strong> {{ product_to_compare.name }} Please select another product to compare.
+                    <button class="delete" onclick="clearComparison()"></button>
+                </div>
+            {% endwith %}
+        {% endif %}
+    </div>
+    <section class="section">
+        <div class="container">
+            {% block content %}{% endblock content %}
+        </div>
+    </section>
+    <div class="main-content-wrapper">
+        <section class="section">
+            <div class="container">
+                {% block content2 %}{% endblock content2 %}
+            </div>
+        </section>
+    </div>
+
+
+    <footer class="footer">
+        <div class="container">
+            <h3 class="is-size-4 mb-4">NetDeals</h3>
+            
+            {% if user.role == 'seller' %}
+                <a href="{% url 'seller:seller-dashboard' %}">Seller Dashboard</a>
+           
+            {% endif %}
+
+            <br>
+            <a href="{% url 'seller:sellers' %}">All Sellers</a>
+
+        </div>
+    </footer>
+<!-- div for main content -->
+
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block scripts %}
+    {% endblock scripts %}
+    {% block extra_js %}{% endblock %}
+    <script>
+
+        function clearComparison() {
+                fetch('{% url "product:compare-clear" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    },
+                })
+                .then((response) => {
+                    if (response.ok) {
+                        sessionStorage.removeItem("product_to_compare");
+                        const originalProductUrl = sessionStorage.getItem("original_product_url");
+                        sessionStorage.removeItem("original_product_url");
+                        window.location.href = originalProductUrl;
+                    } else {
+                        console.error('Failed to clear comparison');
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error clearing comparison:', error);
+                });
+            }
+            
+        function compareProduct(productID) {
+            let productToCompare = sessionStorage.getItem("product_to_compare");
+            if (productToCompare) {
+                // Fetch comparison data and show overlay
+                fetch('{% url "product:compare" 0 %}'.replace('0', productToCompare) + '?product2=' + productID)
+                    .then(response => response.text())
+                    .then(data => {
+                        showComparisonOverlay(data);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching comparison data:', error);
+                    });
+            } else {
+                sessionStorage.setItem("product_to_compare", productID);
+                sessionStorage.setItem("original_product_url", window.location.href);
+                window.location.href = '/?compare_banner=1';
+            }
+        }
+
+        function displayComparisonBanner(productID) {
+            fetch('/product/get_product_name/' + productID)
+                .then(response => response.text())
+                .then(productName => {
+                    const notification = document.createElement('div');
+                    notification.className = 'notification is-info mt-2';
+                    notification.innerHTML = `<strong>Comparing:</strong> ${productName} Please select another product to compare. <button class="delete" onclick="clearComparison()"></button>`;
+                    const container = document.querySelector('.container.is-fluid');
+                    container.appendChild(notification);
+                })
+                .catch(error => {
+                    console.error('Error fetching product name:', error);
+                });
+        }
+    
+        // Product comparison overlay
+        function showComparisonOverlay(content) {
+            const comparisonOverlay = document.getElementById('comparison-overlay');
+            const comparisonContent = document.getElementById('comparison-content');
+            comparisonContent.innerHTML = content;
+            comparisonOverlay.classList.remove('hidden');
+        }
+    
+        function hideComparisonOverlay() {
+            clearComparison();
+            const comparisonOverlay = document.getElementById('comparison-overlay');
+            comparisonOverlay.classList.add('hidden');
+    
+            // Show main content
+            document.getElementById('main-content').style.display = 'block';
+        }
+    
+        // Add event listener for closing the comparison overlay
+        document.addEventListener("DOMContentLoaded", function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const displayCompareBanner = urlParams.get('compare_banner');
+    
+            if (displayCompareBanner === '1') {
+                const productID = sessionStorage.getItem("product_to_compare");
+                if (productID) {
+                    displayComparisonBanner(productID);
+                }
+            }
+        });
+    
+        function closeComparisonOverlay() {
+            clearComparison();
+            const overlay = document.getElementById('comparison-overlay');
+            overlay.style.display = 'none';
+        }
+    </script>
+    <!-- comparison pop up -->
+    <div id="comparison-overlay" class="comparison-overlay hidden">
+        <div class="comparison-container">
+            <button id="comparison-close" class="comparison-close" onclick="closeComparisonOverlay()">×</button>
+            <div id="comparison-content" class="comparison-content"></div>
+        </div>
+    </div>
+</body>
+</html>

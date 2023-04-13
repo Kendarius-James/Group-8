@@ -239,7 +239,8 @@
     {% endblock scripts %}
     {% block extra_js %}{% endblock %}
     <script>
-           function clearComparison() {
+
+        function clearComparison() {
                 fetch('{% url "product:compare-clear" %}', {
                     method: 'POST',
                     headers: {
@@ -281,8 +282,6 @@
             }
         }
 
-
-    
         function displayComparisonBanner(productID) {
             fetch('/product/get_product_name/' + productID)
                 .then(response => response.text())

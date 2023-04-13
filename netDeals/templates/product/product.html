@@ -28,7 +28,7 @@
                 {% endfor %}
             {% endif %}
             <!-- button for compare listing -->
-            <a href="{% url 'product:report_product' product_id=product.pk %}" class="button is-danger ">Report Product</a>
+            <button onclick="openReportModal()" class="button is-danger">Report Listing</button>
             <button type="button" class="button is-primary" onclick="compareProduct({{ product.pk }})">Compare</button>
             <br>
             <br>
@@ -50,11 +50,17 @@
             </form>
         </div>
     </div>
+    
     <style>
+        .modal{
+            z-index: 1000;
+        }
         .rounded-image {
         border-radius: 1rem;
         }
-
+        .modal.is-active {
+            display: flex !important;
+        }
         .shadowed-background {
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.1);
         border-radius: 1rem;
@@ -65,7 +71,6 @@
 
     {% if similar_products %}
         <hr>
-
         <div class="columns is-multiline">
             <div class="column is-12">
                 <h2 class="subtitle">Similar Products</h2>
@@ -76,5 +81,30 @@
             {% endfor %}
         </div>
     {% endif %}
+    <!-- Report product model -->
+    <div id="report-modal" class="modal">
+        <div class="modal-background" onclick="closeReportModal()"></div>
+        <div class="modal-content">
+            {% include 'product/report_product.html' %}
+        </div>
+        <button class="modal-close is-large" aria-label="close" onclick="closeReportModal()"></button>
+    </div>
 
+      {% block extra_js %}
+      <script>
+        function openReportModal() {
+            console.log("openReportModal called");
+            var modal = document.getElementById('report-modal');
+            console.log("Modal element:", modal);
+            modal.classList.add('is-active');
+        }
+
+        function closeReportModal() {
+            console.log("closeReportModal called");
+            var modal = document.getElementById('report-modal');
+            console.log("Modal element:", modal);
+            modal.classList.remove('is-active');
+        }
+      </script>
+{% endblock %}
 {% endblock content %}

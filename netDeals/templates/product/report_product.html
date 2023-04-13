@@ -1,10 +1,23 @@
-{% extends 'product/base_popup.html' %}
+<div class="box">
+    <h2 class="title">Report Product</h2>
+    <br>
+    <form method="post" action="{% url 'product:report_product' product.id %}">
 
-{% block content %}
-    <h2>Report Product</h2>
-    <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Submit Report</button>
+        <h1><strong>Reason: </strong></h1>
+        {{ report_form.reason }}
+        <button type="submit" class="button is-danger">Submit Report</button>
+        <button type="button" class="button" onclick="closeReportModal()">Cancel</button>
     </form>
-{% endblock %}
+    <style>
+         #id_reason{
+            width: 100%;
+            padding: 8px 5px;
+            margin: 4px 0;
+            box-sizing: border-box;
+            }
+        .title{
+            text-align: center;
+        }
+    </style>
+</div>

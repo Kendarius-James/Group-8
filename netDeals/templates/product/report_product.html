@@ -1,5 +1,5 @@
 <div class="box">
-    <h2 class="title">Report Product</h2>
+    <h2 class="poptitle">Report Product</h2>
     <br>
     <form method="post" action="{% url 'product:report_product' product.id %}">
 
@@ -16,7 +16,9 @@
             margin: 4px 0;
             box-sizing: border-box;
             }
-        .title{
+        .poptitle{
+            font-weight: bold;
+            font-size: 2vw;
             text-align: center;
         }
     </style>

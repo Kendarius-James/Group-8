@@ -145,11 +145,11 @@ CART_SESSION_ID = 'cart'
 # For Email Notification
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'group8isbest@gmail.com'
-EMAIL_HOST_PASSWORD = 'bzhm pofi ntwh wlix'
+EMAIL_HOST_USER = 'groupeightwebsite@gmail.com'
+EMAIL_HOST_PASSWORD = 'allsrxmxddaidqyj'
 EMAIL_PORT = 465
 EMAIL_USE_TLS = True
-DEFAULT_EMAIL_FROM = 'NetDeals <group8isbest@gmail.com>'
+DEFAULT_EMAIL_FROM = 'NetDeals <groupeightwebsite@gmail.com>'
 EMAIL_USE_SSL = True
 EMAIL_USE_TLS = False
 AUTH_USER_MODEL = "accounts.CustomUser"

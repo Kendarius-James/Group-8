@@ -27,17 +27,24 @@ class Cart(object):
 
     def add(self, product_id, quantity=1, update_quantity=False):
         product_id = str(product_id)
+        product = Product.objects.get(pk=product_id)
+
+        # Check if the product is available
+        if product.quantity <= 0:
+            return False
 
         if product_id not in self.cart:
             self.cart[product_id] = {'quantity': 1, 'id': product_id}
 
         if update_quantity:
-            self.cart[product_id]['quantity'] += int(quantity)
-            
-            if self.cart[product_id]['quantity'] == 0:
-                self.remove(product_id)
-        
+            new_quantity = self.cart[product_id]['quantity'] + int(quantity)
+            if new_quantity <= product.quantity:
+                self.cart[product_id]['quantity'] = new_quantity
+            else:
+                self.cart[product_id]['quantity'] = product.quantity
+
         self.save()
+        return True
 
     def remove(self, product_id):
         if product_id in self.cart:

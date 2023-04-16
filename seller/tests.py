@@ -66,6 +66,7 @@ class TestAddProductView(TestCase):
             'title': 'Test Product',
             'description': 'Test description',
             'price': 100,
+            'quantity': 10,
             'image': self.image
         }, follow=True)
 

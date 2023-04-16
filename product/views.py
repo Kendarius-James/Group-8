@@ -9,6 +9,11 @@ from cart.cart import Cart
 from django.http import HttpResponse
 from .models import ProductReport
 from .forms import ProductReportForm
+#edit quantity feature
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
 
 # Create your views here.
 def product(request, category_slug, product_slug):
@@ -23,9 +28,13 @@ def product(request, category_slug, product_slug):
         
         if form.is_valid():
             quantity = form.cleaned_data['quantity']
-            cart.add(product_id=product.id, quantity=quantity, update_quantity=False)
+            success = cart.add(product_id=product.id, quantity=quantity, update_quantity=False)
 
-            messages.success(request, "The product was added to the cart.")
+            if success:
+                messages.success(request, "Successfully added to cart.")
+            else:
+                messages.error(request, "Failed to add to cart. Item is not available.")
+            
 
             return redirect('product:product', category_slug=category_slug, product_slug=product_slug)            
     
@@ -103,4 +112,37 @@ def report_product(request, product_id):
         report_form = ProductReportForm()
     return render(request, 'product/report_product.html', {'report_form': report_form, 'product_id': product_id}, content_type='text/html')
     
-    
+@login_required
+def update_product(request, product_id):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        product = get_object_or_404(Product, id=product_id, seller=request.user.sellerprofile)
+        product.price = data['price']
+        product.quantity = data['quantity']
+        try:
+            product.save()
+        except Exception as e:
+            print(f"Error saving product: {e}")
+            return JsonResponse({'status': 'error', 'message': 'Error saving product'})
+
+        return JsonResponse({'status': 'success'})
+
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+#
+# def update_product(request, product_id):
+#     if request.method == 'POST' and request.user.is_authenticated:
+#         data = json.loads(request.body)
+#         quantity = data.get('quantity')
+#         price = data.get('price')
+
+#         try:
+#             product = Product.objects.get(id=product_id, seller=request.user)
+#             product.quantity = quantity
+#             product.price = price
+#             product.save()
+
+#             return JsonResponse({'status': 'success'})
+#         except Product.DoesNotExist:
+#             return JsonResponse({'status': 'error', 'message': 'Product not found'}, status=404)
+#     else:
+#         return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)

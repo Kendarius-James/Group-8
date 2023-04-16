@@ -5,6 +5,7 @@ from .cart import Cart
 from .forms import CheckoutForm
 from django.contrib.auth.models import AnonymousUser
 from accounts.models import BuyerProfile, SellerProfile, CustomUser
+from product.models import Product
 
 from order.utilities import checkout, notify_seller, notify_customer
 def cart_detail(request):
@@ -42,7 +43,7 @@ def cart_detail(request):
                 
     else:
         form = CheckoutForm()
-
+        
     remove_from_cart = request.GET.get('remove_from_cart', '')
     change_quantity = request.GET.get('change_quantity', '')
     quantity = request.GET.get('quantity', 0)
@@ -52,10 +53,16 @@ def cart_detail(request):
         return redirect('cart:cart')
     
     if change_quantity:
-        cart.add(change_quantity, quantity, True)
+        product = Product.objects.get(pk=change_quantity)
+        current_cart_quantity = cart.cart.get(change_quantity, {}).get('quantity', 0)
+        desired_new_quantity = int(quantity) + current_cart_quantity
+        if desired_new_quantity <= product.quantity:
+            cart.add(change_quantity, quantity, True)
+        else:
+            messages.error(request, 'The quantity you have requested is not available.')
         return redirect('cart:cart')
-        
-    return render(request, 'cart/cart.html', {'form': form, 'profile': profile})
+
+    return render(request, 'cart/cart.html', {'form': form, 'profile': profile, 'messages':messages.get_messages(request)})
 
 
 def success(request):

@@ -8,6 +8,7 @@ app_name = 'product'
 
 
 urlpatterns = [
+    path('update_product/<int:product_id>/', views.update_product, name='update_product'),
     path('get_product_name/<int:product_id>/', views.get_product_name, name='get_product_name'),
     path('compare/clear/', clear_comparison, name='compare-clear'),
     path('remove_compare/<int:product_id>/', views.remove_compare, name='remove_compare'),

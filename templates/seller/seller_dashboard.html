@@ -19,26 +19,43 @@
 
         {% if products %}
         
-            <table class="table is-fullwidth">
-                <thead>
+        <table class="table is-fullwidth">
+            <thead>
+                <tr>
+                    <th>S.N.</th>
+                    <th>Title</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+    
+            <tbody>
+                {% for product in products %}
                     <tr>
-                        <th>S.N.</th>
-                        <th>Title</th>
-                        <th>Price</th>
+                        <td>{{ forloop.counter }}</td>
+                        <td><a href="{% url 'product:product' product.category.slug product.slug %}">{{ product.title }}</a></td>
+                        <td id="quantity-{{ product.id }}" data-product-id="{{ product.id }}" >{{ product.quantity }}</td>
+                        <td id="price-{{ product.id }}" data-product-id="{{ product.id }}" >${{ product.price }}</td>
+                        <td>
+                            <div class="edit-controls" data-product-id="{{ product.id }}" style="display: none; position: absolute; background-color: white; padding: 5px; border-radius: 5px;">
+                                <button class="button is-small is-success submit-edit" data-product-id="{{ product.id }}">Submit</button>
+                                <button class="button is-small is-danger cancel-edit" data-product-id="{{ product.id }}">Cancel</button>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="edit-toggle" data-product-id="{{ product.id }}">
+                                <span class="icon">
+                                    <i class="fa-solid fa-pencil" style="color: #000000;"></i>
+                                </span>
+                            </span>
+                        </td>
                     </tr>
-                </thead>
-
-                <tbody>
-                    {% for product in products %}
-                        <tr>
-                            <td>{{ forloop.counter }}</td>
-                            <td><a href="{% url 'product:product' product.category.slug product.slug %}">{{ product.title }}</a></td>
-                            <td>${{ product.price }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-
-            </table>
+                {% endfor %}
+            </tbody>
+    
+        </table>
 
         {% else %}
             <p class="has-text-danger">Products not added yet.</p>
@@ -102,9 +119,118 @@
     </div>
 
     </div>
+    <style>
+        .editable {
+            border: 1px solid #080808;
+            padding: 0.25em 0.5em;
+        }
+        .input-rounded {
+            border-radius: 5px;
+            border: 1px solid #dbdbdb;
+            padding: 5px;
+        }
 
+        .submit-button-container {
+            position: relative;
+        }
+
+        .submit-button {
+            position: absolute;
+            top: 0;
+            right: -80px;
+        }
+    </style>
+    
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.edit-toggle').forEach(toggle => {
+        toggle.addEventListener('click', function() {
+        const productId = this.dataset.productId;
+        const quantityField = document.getElementById(`quantity-${productId}`);
+        const priceField = document.getElementById(`price-${productId}`);
+        const row = this.closest('tr');
+        const editControls = row.querySelector('.edit-controls');
+        const submitButton = editControls.querySelector('.submit-edit');
+        const cancelButton = editControls.querySelector('.cancel-edit');
+
+        if (!quantityField.querySelector('input') && !priceField.querySelector('input')) {
+            const originalQuantity = quantityField.innerText.trim();
+            const originalPrice = priceField.innerText.trim().substring(1);
+            
+            // Create input fields for quantity and price
+            const quantityInput = document.createElement('input');
+            quantityInput.type = 'number';
+            quantityInput.min = '0';
+            quantityInput.value = originalQuantity;
+            quantityInput.style.width = '50px';
+            quantityInput.style.height = '40px';
+            quantityInput.style.fontSize = '16px';
+            quantityInput.className = 'input-rounded';
+
+            const priceInput = document.createElement('input');
+            priceInput.type = 'number';
+            priceInput.min = '0';
+            priceInput.step = '0.01';
+            priceInput.value = originalPrice;
+            priceInput.style.width = '60px';
+            priceInput.style.height = '40px';
+            priceInput.style.fontSize = '16px';
+            priceInput.className = 'input-rounded';
+
+            // Replace text with input fields
+            quantityField.textContent = '';
+            quantityField.appendChild(quantityInput);
+            priceField.textContent = '';
+            priceField.appendChild(priceInput);
+
+            // Show the edit controls div
+            editControls.style.display = 'block';
+
+            submitButton.addEventListener('click', async () => {
+
+                try {
+                    const response = await fetch(`{% url "product:update_product" product_id=0 %}`.replace("0", productId), {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            product_id: productId,
+                            quantity: quantityInput.value,
+                            price: priceInput.value,
+                        }),
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}',
+                        }
+                    });
+
+                    if (response.ok) {
+                        // Remove the input fields and restore the new values.
+                        quantityField.innerHTML = quantityInput.value;
+                        priceField.innerHTML = '$' + priceInput.value;
+                    } else {
+                        // Show an error message if the response is not OK.
+                        alert('Error updating product information. Please try again.');
+                    }
+                } catch (error) {
+                    // Show an error message if there's a problem with the request.
+                    alert('Error updating product information. Please try again.');
+                }
+
+                // Hide the edit controls div
+                editControls.style.display = 'none';
+            });
+
+            cancelButton.addEventListener('click', () => {
+                // Remove the input fields and restore the original values.
+                quantityField.innerHTML = originalQuantity;
+                priceField.innerHTML = '$' + originalPrice;
+
+                // Hide the edit controls div
+                editControls.style.display = 'none';
+            });
+        }
+    });
+});
+
+    document.addEventListener('DOMContentLoaded', function () {
             const moreInfoButtons = document.querySelectorAll('.more-info-btn');
             moreInfoButtons.forEach(function (button) {
                 button.addEventListener('click', function () {

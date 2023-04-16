@@ -20,7 +20,14 @@
                             <th></th>
                         </tr>
                     </thead>
-
+            
+                    {% if messages %}
+                        <div class="messages">
+                            {% for message in messages %}
+                                <div {% if message.tags %} class="notification is-warning" {% endif %} id="message-{{ forloop.counter }}">{{ message }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                     <tbody>
                         {% for item in cart %}
                         
@@ -275,9 +282,7 @@
                     </div>
                 {% endif %}
             </div>
-           
-
-
+        
             <!-- <h2 class="subtitle">Payment Information</h2>
 
             <div id="card-element">
@@ -311,37 +316,50 @@
 
     <script src="https://js.stripe.com/v3/"></script>
     <script>
-        var stripe = Stripe('{{ stripe_pub_key }}');
-        var elements = stripe.elements();
-
-        var card = elements.create('card');
-
-        card.mount('#card-element');
-
-        var form = document.getElementById('payment-form');
-        form.addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            stripe.createToken(card).then(function(result) {
-                if (result.error) {
-                    var errorElement = document.getElementById('card-errors');
-                    errorElement.textContent = result.error.message;
-                } else {
-                    stripeTokenHandler(result.token);
-                }
-            });
-        });
-
-        function stripeTokenHandler(token) {
-            var form = document.getElementById('payment-form');
-            var hiddenInput = document.createElement('input');
-            hiddenInput.setAttribute('type', 'hidden');
-            hiddenInput.setAttribute('name', 'stripe_token');
-            hiddenInput.setAttribute('value', token.id);
-            form.appendChild(hiddenInput);
-
-            form.submit();
+        function closeMessage(id) {
+            var message = document.getElementById(id);
+            if (message) {
+                message.style.display = 'none';
+            }
         }
+
+    {% for message in messages %}
+        setTimeout(function() {
+            closeMessage("message-{{ forloop.counter }}");
+        }, 4000); // Adjust this value to change the duration (5000 milliseconds = 5 seconds)
+    {% endfor %}
+
+        // var stripe = Stripe('{{ stripe_pub_key }}');
+        // var elements = stripe.elements();
+
+        // var card = elements.create('card');
+
+        // card.mount('#card-element');
+
+        // var form = document.getElementById('payment-form');
+        // form.addEventListener('submit', function(event) {
+        //     event.preventDefault();
+
+        //     stripe.createToken(card).then(function(result) {
+        //         if (result.error) {
+        //             var errorElement = document.getElementById('card-errors');
+        //             errorElement.textContent = result.error.message;
+        //         } else {
+        //             stripeTokenHandler(result.token);
+        //         }
+        //     });
+        // });
+
+        // function stripeTokenHandler(token) {
+        //     var form = document.getElementById('payment-form');
+        //     var hiddenInput = document.createElement('input');
+        //     hiddenInput.setAttribute('type', 'hidden');
+        //     hiddenInput.setAttribute('name', 'stripe_token');
+        //     hiddenInput.setAttribute('value', token.id);
+        //     form.appendChild(hiddenInput);
+
+        //     form.submit();
+        // }
     </script>
 
 {% endblock scripts %}

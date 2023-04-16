@@ -29,6 +29,7 @@ class Category(models.Model):
 
 
 class Product(models.Model):
+    quantity = models.PositiveIntegerField(default=0)
     category = models.ForeignKey(Category, related_name='products', on_delete=models.CASCADE)
     seller = models.ForeignKey(SellerProfile, related_name="products", on_delete=models.CASCADE)
     title = models.CharField(max_length=50)

@@ -128,6 +128,18 @@ def update_product(request, product_id):
         return JsonResponse({'status': 'success'})
 
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+@login_required
+def delete_product(request, product_id):
+    product = get_object_or_404(Product, id=product_id, seller=request.user.sellerprofile)
+    
+    try:
+        product.delete()
+    except Exception as e:
+        print(f"Error deleting product: {e}")
+        return JsonResponse({'status': 'error', 'message': 'Error deleting product'})
+
+    return JsonResponse({'status': 'success'})
 #
 # def update_product(request, product_id):
 #     if request.method == 'POST' and request.user.is_authenticated:

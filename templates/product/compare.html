@@ -11,8 +11,8 @@
     </thead>
     <tbody>
         <tr>
-            <td><img class="rounded-image" src="{{ product1.image.url }}" alt="{{ product1.title }}" width="200" class="compare-image"></td>
-            <td><img class="rounded-image" src="{{ product2.image.url }}" alt="{{ product2.title }}" width="200" class="compare-image"></td>
+            <td><img class="rounded-image" src="{{ product1.get_thumbnail }}" alt="{{ product1.title }}" width="200" class="compare-image"></td>
+            <td><img class="rounded-image" src="{{ product2.get_thumbnail }}" alt="{{ product2.title }}" width="200" class="compare-image"></td>
         </tr>
         <tr>
             <td><span class="price">${{ product1.price }}</span></td>

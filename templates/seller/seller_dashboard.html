@@ -41,7 +41,8 @@
                         <td>
                             <div class="edit-controls" data-product-id="{{ product.id }}" style="display: none; position: absolute; background-color: white; padding: 5px; border-radius: 5px;">
                                 <button class="button is-small is-success submit-edit" data-product-id="{{ product.id }}">Submit</button>
-                                <button class="button is-small is-danger cancel-edit" data-product-id="{{ product.id }}">Cancel</button>
+                                <button class="button is-small is-warning cancel-edit" data-product-id="{{ product.id }}">Cancel</button>
+                                <button class="button is-small is-danger delete-product" data-product-id="{{ product.id }}">Delete</button>
                             </div>
                         </td>
                         <td>
@@ -56,6 +57,23 @@
             </tbody>
     
         </table>
+
+        <div id="delete-confirmation-modal" class="modal">
+            <div class="modal-background"></div>
+            <div class="modal-content">
+                <div class="box">
+                    <h3 class="title">Delete Product</h3>
+                    <p>Are you sure you want to delete this product?</p>
+                    <br>
+                    <br>
+                    <div class="buttons">
+                        <button id="delete-confirm" class="button is-danger">Yes</button>
+                        <button id="delete-cancel" class="button is-light">No</button>
+                    </div>
+                </div>
+            </div>
+            <button class="modal-close is-large" aria-label="close"></button>
+        </div>
 
         {% else %}
             <p class="has-text-danger">Products not added yet.</p>
@@ -120,6 +138,9 @@
 
     </div>
     <style>
+        #delete-confirmation-modal{
+            z-index: 4000;
+        }
         .editable {
             border: 1px solid #080808;
             padding: 0.25em 0.5em;
@@ -142,6 +163,57 @@
     </style>
     
     <script>
+        document.querySelectorAll('.delete-product').forEach(button => {
+            button.addEventListener('click', function() {
+            const productId = this.dataset.productId;
+            const deleteModal = document.getElementById('delete-confirmation-modal');
+            const deleteConfirm = document.getElementById('delete-confirm');
+            const deleteCancel = document.getElementById('delete-cancel');
+            const modalClose = deleteModal.querySelector('.modal-close');
+
+            // Show the modal
+            deleteModal.classList.add('is-active');
+
+            deleteConfirm.onclick = async () => {
+                // Remove the event listener to prevent multiple calls
+                deleteConfirm.onclick = null;
+
+                try {
+                    const response = await fetch(`{% url "product:delete_product" product_id=0 %}`.replace("0", productId), {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRFToken': '{{ csrf_token }}',
+                        }
+                    });
+
+                    if (response.ok) {
+                        // Remove the row from the table.
+                        const row = button.closest('tr');
+                        row.parentNode.removeChild(row);
+                    } else {
+                        // Show an error message if the response is not OK.
+                        alert('Error deleting product. Please try again.');
+                    }
+                } catch (error) {
+                    // Show an error message if there's a problem with the request.
+                    alert('Error deleting product. Please try again.');
+                }
+
+                // Hide the modal
+                deleteModal.classList.remove('is-active');
+            };
+
+            const closeModal = () => {
+                deleteModal.classList.remove('is-active');
+                deleteCancel.removeEventListener('click', closeModal);
+                modalClose.removeEventListener('click', closeModal);
+            };
+
+            deleteCancel.addEventListener('click', closeModal);
+            modalClose.addEventListener('click', closeModal);
+        });
+    });
+
     document.querySelectorAll('.edit-toggle').forEach(toggle => {
         toggle.addEventListener('click', function() {
         const productId = this.dataset.productId;
@@ -161,7 +233,7 @@
             quantityInput.type = 'number';
             quantityInput.min = '0';
             quantityInput.value = originalQuantity;
-            quantityInput.style.width = '50px';
+            quantityInput.style.width = '70px';
             quantityInput.style.height = '40px';
             quantityInput.style.fontSize = '16px';
             quantityInput.className = 'input-rounded';
@@ -171,7 +243,7 @@
             priceInput.min = '0';
             priceInput.step = '0.01';
             priceInput.value = originalPrice;
-            priceInput.style.width = '60px';
+            priceInput.style.width = '80px';
             priceInput.style.height = '40px';
             priceInput.style.fontSize = '16px';
             priceInput.className = 'input-rounded';

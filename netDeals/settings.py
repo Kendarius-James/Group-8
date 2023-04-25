@@ -43,6 +43,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'core.middlewares.NoCacheMiddleware',  # Replace 'yourapp' with the name of your app
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -130,8 +131,8 @@ MEDIA_ROOT = BASE_DIR / 'media/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = 'core:login'
+LOGIN_REDIRECT_URL = 'core:login'
 LOGOUT_REDIRECT_URL = 'core:home'
 
 SESSION_COOKIE_AGE = 86400 # Day in Seconds

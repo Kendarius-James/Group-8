@@ -7,6 +7,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
+from django.views.decorators.cache import never_cache
 
 # Create your views here.
 
@@ -23,6 +24,7 @@ def frontpage(request):
 def contactpage(request):
     return render(request, 'core/contact.html')
 
+@never_cache
 def login_redirect(request):
     form = AuthenticationForm()
     invalid_email = False

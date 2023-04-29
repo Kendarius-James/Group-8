@@ -1,0 +1,89 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Become Buyer {% endblock title %}
+
+{% block content %}
+
+    <h1 class="title">Become Buyer</h1>
+
+    <form method="post" action="" id="become_buyer">
+        {% csrf_token %}
+
+        {% if user_form.non_field_errors %}
+            <div class="notification is-danger">
+                {{user_form.non_field_errors}}
+            </div>
+        {% endif %}
+
+        {% if user_form.errors %}
+            <div class="notification is-danger">
+                <ul>
+                    {% for field in user_form %}
+                        {% for error in field.errors %}
+                            <li><strong>{{field.label}}: </strong>{{error}}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+    <div class="columns">
+        <div class="column is-3">
+            <div class="field">
+                <label for="id_email">Email: </label>
+                <br>
+                {{ user_form.email }}
+            </div>
+
+            <div class="field">
+                <label for="id_password1">Password: </label>
+                <br>
+                {{ user_form.password1 }}
+            </div>
+           
+            <div class="field">
+                <label for="id_first_name">First Name: </label>
+                <br>
+                {{ profile_form.first_name }}
+            </div>
+            <div class="field">
+                <label for="id_phone_number">Phone Number: </label>
+                <br>
+                {{ profile_form.phone_number }}
+            </div>
+        </div>
+
+        <div class="column is-3">
+            <div class="field">
+                <label for="id_address">Address: </label>
+                <br>
+                {{ profile_form.address }}
+            </div>
+            <div class="field">
+                <label for="id_password2">ReEnter Password: </label>
+                <br>
+                {{ user_form.password2 }}
+            </div>
+            <div class="field">
+                <label for="id_last_name">Last Name: </label>
+                <br>
+                {{ profile_form.last_name }}
+            </div>
+        </div>
+    </div>
+        <style>
+            #id_email,#id_password1,#id_password2,#id_first_name,#id_last_name, #id_address, #id_phone_number{
+            width: 100%;
+            padding: 8px 5px;
+            margin: 4px 0;
+            box-sizing: border-box;
+            }
+           
+        </style>
+        <div class="field">
+            <div class="control">
+                <button class="button is-dark is-uppercase">Sign Up</button>
+            </div>
+        </div>
+    </form>
+{% endblock content %}

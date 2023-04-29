@@ -1,0 +1,28 @@
+{% extends 'core/base.html' %}
+
+
+{% block title %}Sellers{% endblock title %}
+
+
+{% block content %}
+
+    <h1 class="title">Sellers</h1>
+
+    <div class="columns is-multiline">
+        {% for seller in sellers %}
+        
+            <div class="column is-3">
+                <div class="box">
+                    <h2 class="subtitle">
+                        {{ seller.company_name }}
+                    </h2>
+                    <hr>
+
+                    <a href="{% url 'seller:seller' seller.id %}" class="button is-primary ">View Products</a>
+                </div>
+            </div>
+
+        {% endfor %}
+    </div>
+
+{% endblock content %}

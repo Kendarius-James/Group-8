@@ -1,0 +1,115 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{product.title}}{% endblock title %}
+
+{% block content %}
+    <div class="columns shadowed-background">
+        {% if product.image %}
+            <div class="column is-half">
+                <figure class="image mb-6">
+                    <img class="rounded-image" src="{{product.image.url}}" alt="{{product.title}}">
+                </figure>
+            </div>
+        {% endif %}
+        <div class="column">
+            <h1 class="title">{{product.title}}, ${{product.price}}</h1>
+            <h2>Quantity: {{product.quantity}}</h2>
+            <br>
+            <br>
+            <p class="mb-6">
+                <a href="{% url 'seller:seller' product.seller.id %}" class="button is-primary ">{{product.seller.company_name}}</a>
+            </p>
+
+            <p>{{product.description}}</p>
+
+            <hr>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="notification {% if message.tags == 'success' %}is-success{% else %}is-warning{% endif %} is-toast">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+            <!-- button for compare listing -->
+            <button onclick="openReportModal()" class="button is-danger">Report Listing</button>
+            <button type="button" class="button is-primary" onclick="compareProduct({{ product.pk }})">Compare</button>
+            <br>
+            <br>
+
+            <form method="post" action="">
+                {% csrf_token %}
+
+                <div class="field has-addons">
+                    <div class="control">
+                        <input type="number" name="quantity" value="1" class="input" min="1" id="">
+                    </div>
+
+                    <div class="control">
+                        
+
+                        <button class="button is-dark is-uppercase">Add to Cart</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <style>
+        .notification{
+            z-index: 1000;
+        }
+        .modal{
+            z-index: 1000;
+        }
+        .rounded-image {
+        border-radius: 1rem;
+        }
+        .modal.is-active {
+            display: flex !important;
+        }
+        .shadowed-background {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.1);
+        border-radius: 1rem;
+        padding: 2rem;
+        background-color: #f3f0f0;
+        }
+    </style>
+
+    {% if similar_products %}
+        <hr>
+        <div class="columns is-multiline">
+            <div class="column is-12">
+                <h2 class="subtitle">Similar Products</h2>
+            </div>
+
+            {% for product in similar_products %}
+                {% include 'product/parts/list_item.html' %}
+            {% endfor %}
+        </div>
+    {% endif %}
+    <!-- Report product model -->
+    <div id="report-modal" class="modal">
+        <div class="modal-background" onclick="closeReportModal()"></div>
+        <div class="modal-content">
+            {% include 'product/report_product.html' %}
+        </div>
+        <button class="modal-close is-large" aria-label="close" onclick="closeReportModal()"></button>
+    </div>
+
+      {% block extra_js %}
+      <script>
+        function openReportModal() {
+            console.log("openReportModal called");
+            var modal = document.getElementById('report-modal');
+            console.log("Modal element:", modal);
+            modal.classList.add('is-active');
+        }
+
+        function closeReportModal() {
+            console.log("closeReportModal called");
+            var modal = document.getElementById('report-modal');
+            console.log("Modal element:", modal);
+            modal.classList.remove('is-active');
+        }
+      </script>
+{% endblock %}
+{% endblock content %}

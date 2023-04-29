@@ -1,0 +1,65 @@
+{% extends 'product/base_popup.html' %}
+
+{% block content %}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>{{ product1.title }}</th>
+            <th>{{ product2.title }}</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><img class="rounded-image" src="{{ product1.get_thumbnail }}" alt="{{ product1.title }}" width="200" class="compare-image"></td>
+            <td><img class="rounded-image" src="{{ product2.get_thumbnail }}" alt="{{ product2.title }}" width="200" class="compare-image"></td>
+        </tr>
+        <tr>
+            <td><span class="price">${{ product1.price }}</span></td>
+            <td><span class="price">${{ product2.price }}</span></td>
+        </tr>
+        <tr>
+            <td>{{ product1.seller.company_name }}</td>
+            <td>{{ product2.seller.company_name }}</td>
+        </tr>
+    </tbody>
+</table>
+<!-- 
+<table class="table">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Image</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{ product.name }}</td>
+            <td>
+                <img src="{{ product1.image.url }}" alt="{{ product1.title }}" class="compare-image">
+                <img src="{{ product2.image.url }}" alt="{{ product2.title }}" class="compare-image">
+            </td>
+            <td>
+                <span class="price">${{ product1.price }}</span>
+                <span class="price">${{ product2.price }}</span>
+            </td>
+        </tr>
+    </tbody>
+</table> -->
+{% block extra_css %}
+<style>
+    .compare-image {
+        border: 2px solid #333;
+        border-radius: 5px;
+    }
+
+    .price {
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 5px;
+    }
+</style>
+{% endblock extra_css %}
+
+{% endblock %}

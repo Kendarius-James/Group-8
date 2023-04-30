@@ -36,35 +36,35 @@
     
                                 <tbody>
                                     {% for item in order.filtered_items %}
-    <tr>
-        <td>
-            {% if item.product %}
-                <a href="{% url 'product:product' item.product.category.slug item.product.slug %}">
-            {% endif %}
-            {{ item.get_item_title }}
-            {% if item.product %}
-                </a>
-            {% endif %}
-        </td>
-        <td>${{ item.get_item_price }}</td>
-        <td>{{ item.quantity }}</td>
-        <td>${{ item.get_total_price }}</td>
-        {% if item.return_status %}
-            <td>
-                <p>Pending</p>
-            </td>
-        {% else %}
-            <td>
-                <script>
-                    //Global variable to set the item id
-                    var productID = "{{ item.product_id }}";
-                    var orderId = 0;
-                </script>
-                <div><button class="button is-small is-danger delete-product" data-order-id="{{ order.id }}" data-date="{{ order.created_at }}">Return</button></div>
-            </td>
-        {% endif %}
-    </tr>
-{% endfor %}
+                                    <tr>
+                                        <td>
+                                            {% if item.product %}
+                                                <a href="{% url 'product:product' item.product.category.slug item.product.slug %}">
+                                            {% endif %}
+                                            {{ item.get_item_title }}
+                                            {% if item.product %}
+                                                </a>
+                                            {% endif %}
+                                        </td>
+                                        <td>${{ item.get_item_price }}</td>
+                                        <td>{{ item.quantity }}</td>
+                                        <td>${{ item.get_total_price }}</td>
+                                        {% if item.return_status %}
+                                            <td>
+                                                <p>Pending</p>
+                                            </td>
+                                        {% else %}
+                                            <td>
+                                                <script>
+                                                    //Global variable to set the item id
+                                                    var productID = "{{ item.product_id }}";
+                                                    var orderId = 0;
+                                                </script>
+                                                <div><button class="button is-small is-danger delete-product" data-order-id="{{ order.id }}" data-product-id="{{ item.product_id }}" data-date="{{ order.created_at }}">Return</button></div>
+                                            </td>
+                                        {% endif %}
+                                    </tr>
+                                {% endfor %}
                                 </tbody>
                             </table>
                              <!--Copy and pasted from seller dashboard-->
@@ -98,7 +98,10 @@
     <script>
         document.querySelectorAll('.delete-product').forEach(button => {
            button.addEventListener('click', function() {
-           var orderId = this.dataset.orderId;
+           const orderId = this.dataset.orderId;
+           const productID = this.dataset.productId;
+           console.log("orderID: ",orderId)
+           console.log("productID: ",productID)
            const time = this.dataset.date;
            var newtime = time.split(", ")
            //Removed time due to formating issues, will calculate time based on 12:00am
@@ -120,13 +123,12 @@
 
            deleteConfirm.onclick = async () => {
                // Remove the event listener to prevent multiple calls
-               deleteConfirm.onclick = null; 
-
+               deleteConfirm.onclick = null;
+               
                if (result == true){
                try {
-
-                    const response = await fetch(`/order/buyer_return_status/${orderId}/${productID}/return/`, {
-        
+                   const response = await fetch(`/order/buyer_return_status/${orderId}/${productID}/return/`, {
+                   
                    });
 
                    if (response.ok) {

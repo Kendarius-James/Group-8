@@ -30,7 +30,7 @@ def seller_return_status(request, order_id, product_id):
 def buyer_return_status(request, order_id, product_id):
     order = get_object_or_404(OrderItem, order_id=order_id, product_id=product_id)
     order.return_status = True
-    order.product.pk 
+    #order.product.pk 
     order.save()
     
     return JsonResponse({'status': 'success'})

@@ -55,7 +55,7 @@
                                                 var productID = "{{ item.product_id }}";
                                                 var orderId = 0;
                                             </script>
-                                            <div><button class="button is-small is-danger delete-product" data-order-id="{{ order.id }}" data-date="{{ order.created_at }}">Return</button></div>
+                                            <div><button class="button is-small is-danger delete-product" data-order-id="{{ order.id }}" data-product-id="{{ item.product_id }}" data-date="{{ order.created_at }}">Return</button></div>
                                         </td>
                                         {% endif %}
                                     </tr>
@@ -94,6 +94,9 @@
          document.querySelectorAll('.delete-product').forEach(button => {
             button.addEventListener('click', function() {
             const orderId = this.dataset.orderId;
+            const productID = this.dataset.productId;
+            console.log("orderID: ",orderId)
+            console.log("productID: ",productID)
             const time = this.dataset.date;
             var newtime = time.split(", ")
             //Removed time due to formating issues, will calculate time based on 12:00am

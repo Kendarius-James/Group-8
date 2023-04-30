@@ -71,6 +71,7 @@ def buyer(request, buyer_id):
 @login_required
 def order_history(request):
     buyer = request.user.buyerprofile
+    
     orders = Order.objects.filter(buyer=buyer).prefetch_related('items')
 
     # Filter items for each order

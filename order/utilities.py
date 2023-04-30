@@ -22,7 +22,7 @@ def checkout(request, first_name, last_name, email, address, zipcode, place, pho
     order = Order.objects.create(first_name=first_name, last_name=last_name, email=email, address=address, zipcode=zipcode, place=place, phone=phone, paid_amount=amount, buyer=buyer, seller=seller)
 
     for item in Cart(request):
-        OrderItem.objects.create(order=order, product=item['product'], seller=item['product'].seller, price=item['product'].price, quantity=item['quantity'])
+        OrderItem.objects.create(order=order, product=item['product'], seller=item['product'].seller, price=item['product'].price, quantity=item['quantity'], item_name = item['product'].title)
         order.sellers.add(item['product'].seller)
 
         # Decrease the product quantity

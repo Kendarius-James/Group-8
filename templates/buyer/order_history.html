@@ -36,27 +36,35 @@
     
                                 <tbody>
                                     {% for item in order.filtered_items %}
-                                    <tr>
-                                        <td><a href="{% url 'product:product' item.product.category.slug item.product.slug %}">{{ item.product.title }}</a></td>
-                                        <td>${{ item.product.price }}</td>
-                                        <td>{{ item.quantity }}</td>
-                                        <td>${{ item.get_total_price }}</td>
-                                        {% if item.return_status %}
-                                        <td>
-                                            <p>Pending</p>
-                                        </td>
-                                        {% else %}
-                                        <td>
-                                            <script>
-                                                //Gloabal variable to set the item id
-                                                var productID = "{{ item.product_id }}";
-                                                var orderId = 0;
-                                            </script>
-                                            <div><button class="button is-small is-danger delete-product" data-order-id="{{ order.id }}" data-date="{{ order.created_at }}">Return</button></div>
-                                        </td>
-                                        {% endif %}
-                                    </tr>
-                                {% endfor %}
+    <tr>
+        <td>
+            {% if item.product %}
+                <a href="{% url 'product:product' item.product.category.slug item.product.slug %}">
+            {% endif %}
+            {{ item.get_item_title }}
+            {% if item.product %}
+                </a>
+            {% endif %}
+        </td>
+        <td>${{ item.get_item_price }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>${{ item.get_total_price }}</td>
+        {% if item.return_status %}
+            <td>
+                <p>Pending</p>
+            </td>
+        {% else %}
+            <td>
+                <script>
+                    //Global variable to set the item id
+                    var productID = "{{ item.product_id }}";
+                    var orderId = 0;
+                </script>
+                <div><button class="button is-small is-danger delete-product" data-order-id="{{ order.id }}" data-date="{{ order.created_at }}">Return</button></div>
+            </td>
+        {% endif %}
+    </tr>
+{% endfor %}
                                 </tbody>
                             </table>
                              <!--Copy and pasted from seller dashboard-->

@@ -6,6 +6,7 @@ from .forms import CheckoutForm
 from django.contrib.auth.models import AnonymousUser
 from accounts.models import BuyerProfile, SellerProfile, CustomUser
 from product.models import Product
+from smtplib import SMTPAuthenticationError
 
 from order.utilities import checkout, notify_seller, notify_customer
 def cart_detail(request):
@@ -36,9 +37,12 @@ def cart_detail(request):
                 cart.clear()
 
                 # SEnd Email Notification
-                notify_customer(order)
-                notify_seller(order)
-
+                try:
+                    notify_customer(order)
+                    notify_seller(order)
+                except SMTPAuthenticationError as e:
+                    # Log the error and proceed with the checkout process
+                    print(f"Error sending email: {e}")
                 return redirect('cart:success')
                 
     else:

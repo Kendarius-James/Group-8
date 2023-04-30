@@ -119,6 +119,7 @@ def update_product(request, product_id):
         product = get_object_or_404(Product, id=product_id, seller=request.user.sellerprofile)
         product.price = data['price']
         product.quantity = data['quantity']
+        product.description = data['description']
         try:
             product.save()
         except Exception as e:

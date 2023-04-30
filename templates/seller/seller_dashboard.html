@@ -53,6 +53,12 @@
                             </span>
                         </td>
                     </tr>
+                    <tr id="description-row-{{ product.id }}" class="hidden-row" style="display: none;">
+                        <td colspan="6">
+                            <label for="description-{{ product.id }}">Description:</label>
+                            <textarea id="description-{{ product.id }}" class="textarea">{{ product.description }}</textarea>
+                        </td>
+                    </tr>
                 {% endfor %}
             </tbody>
     
@@ -223,6 +229,15 @@
         const editControls = row.querySelector('.edit-controls');
         const submitButton = editControls.querySelector('.submit-edit');
         const cancelButton = editControls.querySelector('.cancel-edit');
+        const descriptionRow = document.getElementById(`description-row-${productId}`);
+        const descriptionTextarea = descriptionRow.querySelector(`#description-${productId}`);
+        
+        if (descriptionRow.style.display === 'none') {
+            descriptionRow.style.display = '';
+        } 
+        else {
+            descriptionRow.style.display = 'none';
+        }
 
         if (!quantityField.querySelector('input') && !priceField.querySelector('input')) {
             const originalQuantity = quantityField.innerText.trim();
@@ -266,6 +281,7 @@
                             product_id: productId,
                             quantity: quantityInput.value,
                             price: priceInput.value,
+                            description: descriptionTextarea.value, 
                         }),
                         headers: {
                             'Content-Type': 'application/json',
@@ -288,6 +304,10 @@
 
                 // Hide the edit controls div
                 editControls.style.display = 'none';
+                // Hide the edit controls div
+                editControls.style.display = 'none';
+                // Hide the description row
+                descriptionRow.style.display = 'none';
             });
 
             cancelButton.addEventListener('click', () => {
@@ -297,6 +317,8 @@
 
                 // Hide the edit controls div
                 editControls.style.display = 'none';
+                descriptionRow.style.display = 'none';
+
             });
         }
     });

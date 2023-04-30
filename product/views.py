@@ -5,14 +5,16 @@ from .models import Category, Product
 from django.db.models import Q
 from django.http import JsonResponse
 from .forms import AddToCartForm
+from accounts.models import CustomUser
 from cart.cart import Cart
 from django.http import HttpResponse
 from .models import ProductReport
-from .forms import ProductReportForm
+from .forms import ProductReportForm, RatingForm
 #edit quantity feature
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from order.models import OrderItem
 import json
 
 # Create your views here.
@@ -25,7 +27,6 @@ def product(request, category_slug, product_slug):
     # Check whether the AddToCart button is clicked or not
     if request.method == 'POST':
         form = AddToCartForm(request.POST)
-        
         if form.is_valid():
             quantity = form.cleaned_data['quantity']
             success = cart.add(product_id=product.id, quantity=quantity, update_quantity=False)
@@ -47,7 +48,18 @@ def product(request, category_slug, product_slug):
     if len(similar_products) >= 4:
         similar_products = random.sample(similar_products, 4)
     report_form = ProductReportForm()
+    rating_form = RatingForm()
+
+    if request.user.is_authenticated:
+        purchased = OrderItem.objects.filter(product=product, user=request.user).exists()
+    else:
+        purchased = False
+    
     context = {
+        'CustomUser': CustomUser,
+        'OrderItem': OrderItem,
+        'purchased': purchased,
+        'rating_form':rating_form,
         'product': product,
         'similar_products': similar_products,
         'form': form,
@@ -159,3 +171,23 @@ def delete_product(request, product_id):
 #             return JsonResponse({'status': 'error', 'message': 'Product not found'}, status=404)
 #     else:
 #         return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
+@login_required
+def submit_rating(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+
+    # Check if the user has purchased the product
+    if not OrderItem.objects.filter(product=product, user=request.user).exists():
+        return JsonResponse({'status': 'error', 'message': "You can't rate a product you haven't purchased."})
+
+    if request.method == 'POST':
+        form = RatingForm(request.POST)
+        if form.is_valid():
+            rating = form.save(commit=False)
+            rating.user = request.user
+            rating.product = product
+            rating.save()
+            return JsonResponse({'status': 'success', 'message': 'Rating submitted successfully.'})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Invalid form data.'})
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})

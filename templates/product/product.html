@@ -20,6 +20,29 @@
                 <a href="{% url 'seller:seller' product.seller.id %}" class="button is-primary ">{{product.seller.company_name}}</a>
             </p>
 
+            {% if user.is_authenticated and purchased %}
+            <form id="rating-form">
+                    {% csrf_token %}
+                    {{ rating_form }}
+                    <button type="submit" class="button is-primary">Submit Rating</button>
+                </form>
+            {% endif %}
+
+            {% with product.get_average_rating as average_rating %}
+            {% load ratings %}
+                <div class="rating">
+                    {% for i in 5|get_range %}
+                        {% if average_rating >= i %}
+                            <i class="fas fa-star"></i>
+                        
+                        {% else %}
+                            <i class="far fa-star"></i>
+                        {% endif %}
+                    {% endfor %}
+                    <span>{{ average_rating }}</span>
+                </div>
+            {% endwith %}
+
             <p>{{product.description}}</p>
 
             <hr>
@@ -97,6 +120,22 @@
 
       {% block extra_js %}
       <script>
+        document.getElementById('rating-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const formData = new FormData(event.target);
+            const response = await fetch("{% url 'product:submit_rating' product.id %}", {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': document.getElementsByName('csrfmiddlewaretoken')[0].value
+                },
+                body: formData
+            });
+
+            const result = await response.json();
+            alert(result.message);
+        });
+
         function openReportModal() {
             console.log("openReportModal called");
             var modal = document.getElementById('report-modal');

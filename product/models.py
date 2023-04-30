@@ -40,6 +40,12 @@ class Product(models.Model):
     image = models.ImageField(upload_to='uploads/', blank=True, null=True)
     thumbnail = models.ImageField(upload_to='uploads/', blank=True, null=True) # Change uploads to thumbnails 
 
+    def get_average_rating(self):
+        average = self.ratings.aggregate(average=models.Avg('rating'))['average']
+        if average:
+            return round(average, 1)
+        return 0
+
     class Meta:
         ordering = ['-added_date']
 
@@ -86,3 +92,12 @@ class ProductReport(models.Model):
 
     def __str__(self):
         return f"Report {self.pk} - {self.listing}"
+    
+class Rating(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='ratings')
+    rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)])  # Ratings range from 1 to 5
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'product')  # Each user can rate a product only once

@@ -7,10 +7,37 @@
         <div class="column is-12 has-test-centered mt-6 mb-6">
             <h3>Seller: </h3>
             <h2 class="is-size-3">{{seller.user.email}}</h2>
+            <button onclick="openReportModal()" class="button is-danger">Report Seller</button>
         </div>
 
         {% for product in seller.products.all %}
             {% include 'product/parts/list_item.html' %}
         {% endfor %}
     </div>
+
+    <!-- Report product model -->
+    <div id="report-seller-modal" class="modal">
+        <div class="modal-background" onclick="closeReportModal()"></div>
+        <div class="modal-content">
+            {% include 'seller/report_seller.html' %}
+        </div>
+        <button class="modal-close is-large" aria-label="close" onclick="closeReportModal()"></button>
+    </div>
+    {% block extra_js %}
+      <script>
+        function openReportModal() {
+            console.log("openReportModal called");
+            var modal = document.getElementById('report-seller-modal');
+            console.log("Modal element:", modal);
+            modal.classList.add('is-active');
+        }
+
+        function closeReportModal() {
+            console.log("closeReportModal called");
+            var modal = document.getElementById('report-seller-modal');
+            console.log("Modal element:", modal);
+            modal.classList.remove('is-active');
+        }
+      </script>
+      {% endblock %}
 {% endblock content %}

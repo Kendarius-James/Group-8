@@ -5,7 +5,7 @@ from accounts.models import SellerProfile
 from accounts.forms import CustomUserCreationForm, SellerUserCreationForm
 from product.models import Product
 from .decorators import is_seller_approved
-from .forms import ProductForm
+from .forms import ProductForm, SellerReportForm
 from order.models import Order, OrderItem
 from django.shortcuts import redirect, render #redirect if user is not seller trying to do seller actions
 from django.contrib import messages
@@ -47,6 +47,20 @@ def become_seller(request):
 
     context = {'user_form': user_form, 'profile_form': profile_form}
     return render(request, 'seller/become_seller.html', context)
+
+def report_seller(request, seller_id):
+    if request.method == 'POST':
+        report_seller_form = SellerReportForm(request.POST)
+        if report_seller_form.is_valid():
+            report = report_seller_form.save(commit=False)
+            report.seller = SellerProfile.objects.get(pk=seller_id)
+            if request.user.is_authenticated:
+                report.user = request.user
+            report.save()
+            return redirect('core:home')
+    else:
+        report_seller_form = SellerReportForm()
+    return render(request, 'seller/report_seller.html', {'report_seller_form': report_seller_form, 'seller_id': seller_id}, content_type='text/html')
 
 @login_required
 def order_history(request):
@@ -134,5 +148,10 @@ def sellers(request):
 
 def seller(request, seller_id):
     seller = get_object_or_404(SellerProfile, pk=seller_id)
-    return render(request, 'seller/seller.html', {'seller': seller})
+    report_seller_form = SellerReportForm()
+    context = {
+        'report_seller_form':report_seller_form,
+        'seller':seller,
+    }
+    return render(request, 'seller/seller.html', context)
 

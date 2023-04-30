@@ -1,0 +1,25 @@
+<div class="box">
+    <h2 class="poptitle">Report Seller</h2>
+    <br>
+    <form method="post" action="{% url 'seller:report_seller' seller.id %}">
+
+        {% csrf_token %}
+        <h1><strong>Reason: </strong></h1>
+        {{ report_seller_form.reason }}
+        <button type="submit" class="button is-danger">Submit Report</button>
+        <button type="button" class="button" onclick="closeReportModal()">Cancel</button>
+    </form>
+    <style>
+         #id_reason{
+            width: 100%;
+            padding: 8px 5px;
+            margin: 4px 0;
+            box-sizing: border-box;
+            }
+        .poptitle{
+            font-weight: bold;
+            font-size: 2vw;
+            text-align: center;
+        }
+    </style>
+</div>

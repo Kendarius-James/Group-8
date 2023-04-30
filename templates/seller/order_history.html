@@ -32,21 +32,56 @@
                                         <th>Quantity</th>
                                         <th>Paid</th>
                                         <th>Total</th>
+                                        <th>Return</th>
                                     </tr>
                                 </thead>
     
                                 <tbody>
-                                    {% for item in order.filtered_items %}
+                                {% for item in order.filtered_items %}
                                     <tr>
                                         <td>{{ item.product.title }}</td>
                                         <td>${{ item.product.price }}</td>
                                         <td>{{ item.quantity }}</td>
                                         <td>{{ item.seller_paid|yesno:"Yes,No" }}</td>
                                         <td>${{ item.get_total_price }}</td>
+                                        {% if item.return_status %}
+                                        <td>
+                                            <p>Pending</p>
+                                        </td>
+                                        {% else %}
+                                        <td>
+                                            <script>
+                                                //Gloabal variable to set the item id
+                                                var productID = "{{ item.product_id }}";
+                                                var orderId = 0;
+                                            </script>
+                                            <div><button class="button is-small is-danger delete-product" data-order-id="{{ order.id }}" data-product-id="{{ item.product_id }}" data-date="{{ order.created_at }}">Return</button></div>
+                                        </td>
+                                        {% endif %}
                                     </tr>
                                 {% endfor %}
                                 </tbody>
                             </table>
+                            <!--Copy and pasted from seller dashboard-->
+                            <div id="delete-confirmation-modal" class="modal">
+                                <div class="modal-background"></div>
+                                <div class="modal-content">
+                                    <div class="box">
+                                        <h3 class="title">Return Product</h3>
+                                        <p>Are you sure you want to return this product?</p>
+                                        <br>
+                                        <p>Product can't be returned after 14 days.</p>
+                                        <br>
+                                        <br>
+                                        <div class="buttons">
+                                            <button id="delete-confirm" class="button is-danger">Yes</button>
+                                            <button id="delete-cancel" class="button is-light">No</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="modal-close is-large" aria-label="close"></button>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -55,4 +90,79 @@
 
     </div>
 
+    <script>
+         document.querySelectorAll('.delete-product').forEach(button => {
+            button.addEventListener('click', function() {
+            const orderId = this.dataset.orderId;
+            const productID = this.dataset.productId;
+            console.log("orderID: ",orderId)
+            console.log("productID: ",productID)
+            const time = this.dataset.date;
+            var newtime = time.split(", ")
+            //Removed time due to formating issues, will calculate time based on 12:00am
+            var newtime = new Date(`${newtime[0]} ${newtime[1]}`)
+            
+            const deleteModal = document.getElementById('delete-confirmation-modal');
+            const deleteConfirm = document.getElementById('delete-confirm');
+            const deleteCancel = document.getElementById('delete-cancel');
+            const modalClose = deleteModal.querySelector('.modal-close');
+            //Calculates the time for returning the order
+            var currentdate = new Date();
+            var difference = currentdate.getTime() - newtime.getTime();
+            var hoursmili = 1000 * 60 * 60 * 336;
+            var result = Math.abs(difference) < hoursmili;
+            console.log(Math.abs(difference), result, hoursmili);
+            
+            // Show the modal
+            deleteModal.classList.add('is-active');
+
+            deleteConfirm.onclick = async () => {
+                // Remove the event listener to prevent multiple calls
+                deleteConfirm.onclick = null;
+                
+                if (result == true){
+                try {
+                    const response = await fetch(`/order/seller_return_status/${orderId}/${productID}/return/`, {
+                    
+                    });
+
+                    if (response.ok) {
+                        // Remove the row from the table.
+                        //const row = button.closest('tr');
+                        //row.parentNode.removeChild(row);
+                        alert('Return successful');
+                    } else {
+                        // Show an error message if the response is not OK.
+                        alert('Error returning order. Please try again.');
+                    }
+                } catch (error) {
+                    // Show an error message if there's a problem with the request.
+                    alert('Error returning order. Please try again.');
+                }
+
+                // Hide the modal
+                deleteModal.classList.remove('is-active');
+                location.reload();
+            }
+            else {
+                alert('Error returning item, 14 days have been passed')
+            }
+            deleteModal.classList.remove('is-active');
+            };
+
+            const closeModal = () => {
+                deleteModal.classList.remove('is-active');
+                deleteCancel.removeEventListener('click', closeModal);
+                modalClose.removeEventListener('click', closeModal);
+            };
+
+            deleteCancel.addEventListener('click', closeModal);
+            modalClose.addEventListener('click', closeModal);
+        });
+    });
+
+    </script>
+
+
 {% endblock content %}
+

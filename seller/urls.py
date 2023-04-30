@@ -14,6 +14,7 @@ urlpatterns = [
     path('', views.sellers, name="sellers"),
     path('restricted_access/', views.restricted_access, name='restricted_access'),
     path('become-seller/', views.become_seller, name="become-seller"),
+    path('report-seller/<int:seller_id>/', views.report_seller, name='report_seller'),
     path('order-history/', views.order_history, name="order-history"),
     path('seller-dashboard/', views.seller_dashboard, name="seller-dashboard"),
     path('edit-seller/', views.edit_seller, name="edit-seller"),

@@ -7,7 +7,7 @@ class CheckoutForm(forms.Form):
     email = forms.EmailField(max_length=255)
     phone = forms.CharField(max_length=255)
     address = forms.CharField(max_length=255)
-    zipcode = forms.CharField(max_length=255)
+    zipcode = forms.CharField(max_length=10)
     place = forms.CharField(max_length=255)
    # stripe_token = forms.CharField(max_length=255)
 

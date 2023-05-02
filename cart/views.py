@@ -22,6 +22,15 @@ def is_valid_zipcode(value):
     except ValidationError:
         return False
     return True
+
+def is_valid_phonenum(value): 
+    regex = r'(\d{3}[-\.\s]??\d{3}[-\.\s]??\d{4}|\(\d{3}\)\s*\d{3}[-\.\s]??\d{4}|\d{3}[-\.\s]??\d{4})'
+    validator = RegexValidator(regex)
+    try:
+        validator(value)
+    except ValidationError:
+        return False
+    return True
         
 def cart_detail(request):
     cart = Cart(request)
@@ -49,6 +58,12 @@ def cart_detail(request):
                 if not is_valid_zipcode(zipcode):
                     messages.error(request, 'Invalid zip code.')
                     return render(request, 'cart/cart.html', {'form': form, 'profile': profile, 'messages':messages.get_messages(request)})
+                
+                            
+                if not is_valid_phonenum(phone):
+                    messages.error(request, 'Invalid phone number.')
+                    return render(request, 'cart/cart.html', {'form': form, 'profile': profile, 'messages':messages.get_messages(request)})
+
 
                 order = checkout(request, first_name, last_name, email, phone, address, zipcode, place, cart.get_total_cost())
 

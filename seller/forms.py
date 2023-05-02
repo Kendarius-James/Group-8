@@ -7,7 +7,7 @@ from .models import SellerReport
 class ProductForm(ModelForm):
     class Meta:
         model = Product
-        fields = ['category', 'image', 'title', 'description', 'price', 'quantity']
+        fields = ['category', 'image', 'image2', 'image3', 'image4', 'title', 'description', 'price', 'quantity']
 
 class SellerReportForm(forms.ModelForm):
     class Meta:

@@ -4,11 +4,21 @@
 
 {% block content %}
 <div class='aaa box'>
-    <div class="columns is-multiline mb-6">
-        <div class="column is-12 has-test-centered mt-6 mb-6">
-            <h2 class="is-size-3">Latest Products</h2>
+    <div class="columns is-multiline ">
+        <div class="column is-12 has-text-centered  ">
+            <div class="is-flex is-align-items-center ">
+                <h2 class="is-size-3">Latest Products</h2>
+                <form method="get" id="sort-form">
+                    <div class="select ml-4">
+                        <select name="sort" id="sort">
+                            <option value="price_asc" {% if request.GET.sort == 'price_asc' %}selected{% endif %}>Price: Low to High</option>
+                            <option value="price_desc" {% if request.GET.sort == 'price_desc' %}selected{% endif %}>Price: High to Low</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
         </div>
-
+    
         {% for product in newest_products %}
             {% include 'product/parts/list_item.html' %}
         {% endfor %}
@@ -43,3 +53,10 @@
     }
 </style>
 {% endblock content %}
+{% block extra_js %}
+<script>
+    document.getElementById('sort').addEventListener('change', function() {
+        document.getElementById('sort-form').submit();
+    });
+</script>
+{% endblock extra_js %}

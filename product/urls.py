@@ -16,6 +16,7 @@ urlpatterns = [
     path('compare/<int:product_id>/', views.compare, name='compare'),
     path('search', views.search, name="search"),
     path('product/report_product/<int:product_id>/', views.report_product, name='report_product'),
+    path('product/<int:product_id>/submit_rating/', views.submit_rating, name='submit_rating'),
     path('<slug:category_slug>/<slug:product_slug>/', views.product, name="product"),
     path('<slug:category_slug>/', views.category, name="category"),
 

@@ -12,13 +12,45 @@
             </div>
         {% endif %}
         <div class="column">
-            <h1 class="title">{{product.title}}, ${{product.price}}</h1>
+            <h1 class="title">{{product.title}}, ${{product.price}} <a href="{% url 'seller:seller' product.seller.id %}" class="button is-primary ">View Seller</a></h1>
+            
             <h2>Quantity: {{product.quantity}}</h2>
             <br>
+        
+            {% if user.is_authenticated and purchased and not rated%}
+            <form id="rating-form">
+                {% csrf_token %}
+                <div class="field">
+                    <div class="control">
+                        <div class="select">
+                            <select name="{{ rating_form.rating.html_name }}">
+                                <option value="">Select Rating</option>
+                                {% for choice in rating_form.rating.field.choices %}
+                                    <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="button is-primary ">Submit Rating</button>
+                    </div>
+                </div>
+            </form>
+            {% endif %}
             <br>
-            <p class="mb-6">
-                <a href="{% url 'seller:seller' product.seller.id %}" class="button is-primary ">{{product.seller.company_name}}</a>
-            </p>
+            {% with product.get_average_rating as average_rating %}
+            {% load ratings %}
+                <div class="rating">
+                    {% for i in 5|get_range %}
+                        {% if average_rating >= i %}
+                            <i class="fas fa-star"></i>
+                        
+                        {% else %}
+                            <i class="far fa-star"></i>
+                        {% endif %}
+                    {% endfor %}
+                    <span>{{ average_rating }}</span>
+                </div>
+            {% endwith %}
+            <br>
 
             <p>{{product.description}}</p>
 
@@ -97,6 +129,22 @@
 
       {% block extra_js %}
       <script>
+        document.getElementById('rating-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const formData = new FormData(event.target);
+            const response = await fetch("{% url 'product:submit_rating' product.id %}", {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': document.getElementsByName('csrfmiddlewaretoken')[0].value
+                },
+                body: formData
+            });
+
+            const result = await response.json();
+            alert(result.message);
+        });
+
         function openReportModal() {
             console.log("openReportModal called");
             var modal = document.getElementById('report-modal');

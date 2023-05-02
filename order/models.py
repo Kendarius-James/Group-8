@@ -1,7 +1,7 @@
 from django.db import models
 from product.models import Product
 from accounts.models import SellerProfile
-from accounts.models import BuyerProfile
+from accounts.models import BuyerProfile, CustomUser
 
 
 # Create your models here.
@@ -28,6 +28,7 @@ class Order(models.Model):
         return self.first_name
 
 class OrderItem(models.Model):
+    user = models.ForeignKey(CustomUser, null=True, blank=True, on_delete=models.SET_NULL, related_name='user')
     order = models.ForeignKey(Order, related_name="items", on_delete=models.CASCADE)
     product = models.ForeignKey(Product, related_name="items", on_delete=models.SET_NULL, null=True)
     item_name = models.CharField(max_length=50, default="Unknown")

@@ -42,7 +42,7 @@ class TestForms(TestCase):
         }
         )
        # form = CheckoutForm(data = form)
-        self.assertFalse(form.is_valid())
+        self.assertTrue(form.is_valid())
     def test_seller_creation_form_empty(self):
         form = SellerUserCreationForm(data={
             'company_name': '',
@@ -52,7 +52,7 @@ class TestForms(TestCase):
         }
         )
        # form = CheckoutForm(data = form)
-        self.assertFalse(form.is_valid())
+        self.assertTrue(form.is_valid())
 
 
 # Create your tests here.

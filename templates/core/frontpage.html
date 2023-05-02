@@ -3,20 +3,60 @@
 {% block title %}Home Page{% endblock title %}
 
 {% block content %}
-<div class = 'aaa box'>
-    <div class="columns is-multiline mb-6">
-        <div class="column is-12 has-test-centered mt-6 mb-6">
-            <h2 class="is-size-3">Latest Products</h2>
+<div class='aaa box'>
+    <div class="columns is-multiline ">
+        <div class="column is-12 has-text-centered  ">
+            <div class="is-flex is-align-items-center ">
+                <h2 class="is-size-3">Latest Products</h2>
+                <form method="get" id="sort-form">
+                    <div class="select ml-4">
+                        <select name="sort" id="sort">
+                            <option value="price_asc" {% if request.GET.sort == 'price_asc' %}selected{% endif %}>Price: Low to High</option>
+                            <option value="price_desc" {% if request.GET.sort == 'price_desc' %}selected{% endif %}>Price: High to Low</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
         </div>
-
+    
         {% for product in newest_products %}
             {% include 'product/parts/list_item.html' %}
         {% endfor %}
     </div>
+
+    <div class="columns is-centered">
+        <div class="column is-one-third has-text-centered">
+            <nav class="pagination is-outlined" role="navigation" aria-label="pagination">
+                {% if newest_products.has_previous %}
+                    <a class="pagination-previous" href="?page=1"><i class="fas fa-chevron-left"></i><i class="fas fa-chevron-left"></i></a>
+                    <a class="pagination-previous" href="?page={{ newest_products.previous_page_number }}"><i class="fas fa-chevron-left"></i></a>
+                {% else %}
+                    <a class="pagination-previous" disabled><i class="fas fa-chevron-left"></i><i class="fas fa-chevron-left"></i></a>
+                    <a class="pagination-previous" disabled><i class="fas fa-chevron-left"></i></a>
+                {% endif %}
+        
+                {% if newest_products.has_next %}
+                    <a class="pagination-next" href="?page={{ newest_products.next_page_number }}"><i class="fas fa-chevron-right"></i></a>
+                    <a class="pagination-next" href="?page={{ newest_products.paginator.num_pages }}"><i class="fas fa-chevron-right"></i><i class="fas fa-chevron-right"></i></a>
+                {% else %}
+                    <a class="pagination-next" disabled><i class="fas fa-chevron-right"></i></a>
+                    <a class="pagination-next" disabled><i class="fas fa-chevron-right"></i><i class="fas fa-chevron-right"></i></a>
+                {% endif %}
+            </nav>
+        </div>
+    </div>
 </div>
+
 <style>
     .aaa{
         background-color: rgb(245, 244, 244);
     }
 </style>
 {% endblock content %}
+{% block extra_js %}
+<script>
+    document.getElementById('sort').addEventListener('change', function() {
+        document.getElementById('sort-form').submit();
+    });
+</script>
+{% endblock extra_js %}

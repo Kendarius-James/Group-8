@@ -5,12 +5,21 @@
 {% block content %}
     <div class="columns shadowed-background">
         {% if product.image %}
-            <div class="column is-half">
-                <figure class="image mb-6">
-                    <img class="rounded-image" src="{{product.image.url}}" alt="{{product.title}}">
-                </figure>
+        {% load product_filters %}
+        <div class="column is-half">
+            <figure class="image mb-6">
+                <img id="main-image" class="rounded-image" src="{{product.image.url|default:''}}" alt="{{product.title}}">
+            </figure>
+            <div class="thumbnails ">
+                {% for img in product|product_images %}
+                    <figure class="image is-85x85" style="display: inline-block; margin-right: 5px;">
+                        <img class="rounded-image thumbnail" src="{{img.url}}" alt="{{product.title}}" style="width: 100px; height: auto; cursor: pointer;">
+                    </figure>
+                {% endfor %}
             </div>
-        {% endif %}
+        </div>        
+
+    {% endif %}
         <div class="column">
             <h1 class="title">{{product.title}}, ${{product.price}} <a href="{% url 'seller:seller' product.seller.id %}" class="button is-primary ">View Seller</a></h1>
             
@@ -129,6 +138,14 @@
 
       {% block extra_js %}
       <script>
+        const thumbnails = document.querySelectorAll('.thumbnail');
+        const mainImage = document.getElementById('main-image');
+
+        thumbnails.forEach(thumbnail => {
+            thumbnail.addEventListener('click', () => {
+                mainImage.src = thumbnail.src;
+            });
+        });
         document.getElementById('rating-form').addEventListener('submit', async (event) => {
             event.preventDefault();
 

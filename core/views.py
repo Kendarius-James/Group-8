@@ -8,18 +8,29 @@ from django.urls import reverse
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.views.decorators.cache import never_cache
+from django.core.paginator import Paginator
 
 # Create your views here.
 
 def frontpage(request):
-    newest_products = Product.objects.all()[0:8]
-    products = Product.objects.all()
+    sort = request.GET.get('sort')
+
+    if sort == 'price_asc':
+        products = Product.objects.all().order_by('price')
+    elif sort == 'price_desc':
+        products = Product.objects.all().order_by('-price')
+    else:
+        products = Product.objects.all()
+
+    paginator = Paginator(products, 8)
+    page = request.GET.get('page')
+    newest_products = paginator.get_page(page)
+
     context = {
         'newest_products': newest_products,
         'products': products,
     }
     return render(request, 'core/frontpage.html', context)
-
 
 def contactpage(request):
     return render(request, 'core/contact.html')

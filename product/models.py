@@ -39,6 +39,12 @@ class Product(models.Model):
     added_date = models.DateTimeField(auto_now_add=True)
     image = models.ImageField(upload_to='uploads/', blank=True, null=True)
     thumbnail = models.ImageField(upload_to='uploads/', blank=True, null=True) # Change uploads to thumbnails 
+    image2 = models.ImageField(upload_to='uploads/', blank=True, null=True)
+    thumbnail2 = models.ImageField(upload_to='uploads/thumbnails/', blank=True, null=True)
+    image3 = models.ImageField(upload_to='uploads/', blank=True, null=True)
+    thumbnail3 = models.ImageField(upload_to='uploads/thumbnails/', blank=True, null=True)
+    image4 = models.ImageField(upload_to='uploads/', blank=True, null=True)
+    thumbnail4 = models.ImageField(upload_to='uploads/thumbnails/', blank=True, null=True)
 
     def get_average_rating(self):
         average = self.ratings.aggregate(average=models.Avg('rating'))['average']

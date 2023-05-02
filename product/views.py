@@ -8,7 +8,7 @@ from .forms import AddToCartForm
 from accounts.models import CustomUser
 from cart.cart import Cart
 from django.http import HttpResponse
-from .models import ProductReport
+from .models import ProductReport, Rating
 from .forms import ProductReportForm, RatingForm
 #edit quantity feature
 from django.contrib.auth.decorators import login_required
@@ -52,10 +52,12 @@ def product(request, category_slug, product_slug):
 
     if request.user.is_authenticated:
         purchased = OrderItem.objects.filter(product=product, user=request.user).exists()
+        rated = Rating.objects.filter(product = product, user = request.user).exists()
     else:
         purchased = False
-    
+        rated = False
     context = {
+        'rated': rated,
         'CustomUser': CustomUser,
         'OrderItem': OrderItem,
         'purchased': purchased,

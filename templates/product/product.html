@@ -12,22 +12,30 @@
             </div>
         {% endif %}
         <div class="column">
-            <h1 class="title">{{product.title}}, ${{product.price}}</h1>
+            <h1 class="title">{{product.title}}, ${{product.price}} <a href="{% url 'seller:seller' product.seller.id %}" class="button is-primary ">View Seller</a></h1>
+            
             <h2>Quantity: {{product.quantity}}</h2>
             <br>
-            <br>
-            <p class="mb-6">
-                <a href="{% url 'seller:seller' product.seller.id %}" class="button is-primary ">{{product.seller.company_name}}</a>
-            </p>
-
-            {% if user.is_authenticated and purchased %}
+        
+            {% if user.is_authenticated and purchased and not rated%}
             <form id="rating-form">
-                    {% csrf_token %}
-                    {{ rating_form }}
-                    <button type="submit" class="button is-primary">Submit Rating</button>
-                </form>
+                {% csrf_token %}
+                <div class="field">
+                    <div class="control">
+                        <div class="select">
+                            <select name="{{ rating_form.rating.html_name }}">
+                                <option value="">Select Rating</option>
+                                {% for choice in rating_form.rating.field.choices %}
+                                    <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="button is-primary ">Submit Rating</button>
+                    </div>
+                </div>
+            </form>
             {% endif %}
-
+            <br>
             {% with product.get_average_rating as average_rating %}
             {% load ratings %}
                 <div class="rating">
@@ -42,6 +50,7 @@
                     <span>{{ average_rating }}</span>
                 </div>
             {% endwith %}
+            <br>
 
             <p>{{product.description}}</p>
 

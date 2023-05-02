@@ -3,12 +3,26 @@ from django.contrib import messages
 from django.shortcuts import redirect, render
 from .cart import Cart
 from .forms import CheckoutForm
+from .models import ZipCode
 from django.contrib.auth.models import AnonymousUser
 from accounts.models import BuyerProfile, SellerProfile, CustomUser
 from product.models import Product
 from smtplib import SMTPAuthenticationError
+from django.core.exceptions import ValidationError
+from django.core.validators import MinLengthValidator, RegexValidator
 
 from order.utilities import checkout, notify_seller, notify_customer
+
+
+def is_valid_zipcode(value):
+    regex = r'^\d{5}(?:[-\s]\d{4})?$'
+    validator = RegexValidator(regex)
+    try:
+        validator(value)
+    except ValidationError:
+        return False
+    return True
+        
 def cart_detail(request):
     cart = Cart(request)
 
@@ -32,11 +46,15 @@ def cart_detail(request):
                 zipcode = form.cleaned_data['zipcode']
                 place = form.cleaned_data['place']
 
+                if not is_valid_zipcode(zipcode):
+                    messages.error(request, 'Invalid zip code.')
+                    return render(request, 'cart/cart.html', {'form': form, 'profile': profile, 'messages':messages.get_messages(request)})
+
                 order = checkout(request, first_name, last_name, email, phone, address, zipcode, place, cart.get_total_cost())
 
                 cart.clear()
 
-                # SEnd Email Notification
+                # Send Email Notification
                 try:
                     notify_customer(order)
                     notify_seller(order)

@@ -22,6 +22,37 @@
             <td>{{ product1.seller.company_name }}</td>
             <td>{{ product2.seller.company_name }}</td>
         </tr>
+        <tr>
+            <td>{% with product1.get_average_rating as average_rating %}
+                {% load ratings %}
+                    <div class="rating">
+                        {% for i in 5|get_range %}
+                            {% if average_rating >= i %}
+                                <i class="fas fa-star"></i>
+                            
+                            {% else %}
+                                <i class="far fa-star"></i>
+                            {% endif %}
+                        {% endfor %}
+                        <span>{{ average_rating }}</span>
+                    </div>
+                {% endwith %}</td>
+
+            <td>{% with product2.get_average_rating as average_rating %}
+                {% load ratings %}
+                    <div class="rating">
+                        {% for i in 5|get_range %}
+                            {% if average_rating >= i %}
+                                <i class="fas fa-star"></i>
+                            
+                            {% else %}
+                                <i class="far fa-star"></i>
+                            {% endif %}
+                        {% endfor %}
+                        <span>{{ average_rating }}</span>
+                    </div>
+                {% endwith %}</td>
+        </tr>
     </tbody>
 </table>
 <!-- 

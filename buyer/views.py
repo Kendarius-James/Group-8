@@ -11,6 +11,8 @@ from accounts.forms import BuyerUserCreationForm
 ##
 # Converting Title into Slug
 from django.utils.text import slugify
+from verify_email.email_handler import send_verification_email
+
 
 def buyers(request):
     return render(request, 'buyer/buyers.html')
@@ -34,7 +36,12 @@ def become_buyer(request):
             #might need to remove buyer = buyer.objects.create
             #buyer = buyer.objects.create(email=user.email,address=user.address,phonenumber=user.phone_number,company_description=user.company_description, created_by=user)
 
-            return redirect('core:home')
+            if user_form.is_valid():
+
+                inactive_user = send_verification_email(request, user_form)
+                print (inactive_user)
+
+        return redirect('core:home')
     else:
         user_form = CustomUserCreationForm()
         profile_form = BuyerUserCreationForm() 

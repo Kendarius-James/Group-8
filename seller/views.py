@@ -10,6 +10,8 @@ from order.models import Order, OrderItem
 from django.shortcuts import redirect, render #redirect if user is not seller trying to do seller actions
 from django.contrib import messages
 from django.utils.text import slugify# Converting Title into Slug
+from verify_email.email_handler import send_verification_email
+
 
 def sellers(request):
     return render(request, 'seller/sellers.html')
@@ -39,6 +41,11 @@ def become_seller(request):
             login(request, user)
             #might need to remove seller = seller.objects.create
             #seller = seller.objects.create(email=user.email,address=user.address,phonenumber=user.phone_number,company_description=user.company_description, created_by=user)
+
+            if user_form.is_valid():
+
+                inactive_user = send_verification_email(request, user_form)
+                print (inactive_user)
 
             return redirect('core:home')
     else:

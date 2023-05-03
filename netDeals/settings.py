@@ -34,7 +34,7 @@ INSTALLED_APPS = [
     'cart',
     'order',
     'registration',
-    
+    "verify_email.apps.VerifyEmailConfig",
 ]
 
 MIDDLEWARE = [
@@ -146,11 +146,11 @@ CART_SESSION_ID = 'cart'
 # For Email Notification
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'groupeight88se@gmail.com'
-EMAIL_HOST_PASSWORD = 'wsiwzkkrncwdbpor'
+EMAIL_HOST_USER = 'testdummy2143@gmail.com'
+EMAIL_HOST_PASSWORD = 'wjgmqjhzeqtjriml'
 EMAIL_PORT = 465
 EMAIL_USE_TLS = True
-DEFAULT_EMAIL_FROM = 'NetDeals <groupeight88se@gmail.com>'
+DEFAULT_EMAIL_FROM = 'NetDeals <testdummy2143@gmail.com>'
 EMAIL_USE_SSL = True
 EMAIL_USE_TLS = False
 AUTH_USER_MODEL = "accounts.CustomUser"

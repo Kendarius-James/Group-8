@@ -10,6 +10,7 @@ from django.core.exceptions import ValidationError
 from django.views.decorators.cache import never_cache
 from django.core.paginator import Paginator
 
+
 # Create your views here.
 
 def frontpage(request):

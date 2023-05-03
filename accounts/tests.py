@@ -22,17 +22,17 @@ class TestForms(TestCase):
             'address': 'test for best avenue',
         }
         )
-        self.assertTrue(form.is_valid())
-    def test_buyer_creation_form_empty(self):
+        self.assertFalse(form.is_valid())
+    def test_buyer_creation_invalid_form(self):
         form = BuyerUserCreationForm(data={
             'first_name': '',
             'last_name': '',
-            'phone': '',
+            'phone_number': '123456',
             'address': '',
         }
         )
-        #Fields are not required
-        self.assertTrue(form.is_valid())
+        self.assertFalse(form.is_valid())
+
     def test_seller_creation_form_validate(self):
         form = SellerUserCreationForm(data={
             'company_name': 'Walmart',
@@ -43,16 +43,15 @@ class TestForms(TestCase):
         )
        # form = CheckoutForm(data = form)
         self.assertTrue(form.is_valid())
-    def test_seller_creation_form_empty(self):
-        form = SellerUserCreationForm(data={
-            'company_name': '',
-            'company_description': '',
-            'phone_number': '', 
-            'address': '',
-        }
-        )
-       # form = CheckoutForm(data = form)
-        self.assertTrue(form.is_valid())
+    def test_invalid_phone_number(self):
+        form = SellerUserCreationForm(data ={
+            'company_name': 'Test Company',
+            'company_description': 'Test Company Description',
+            'phone_number': '123-456',
+            'address': 'Test Address'
+        })
+        #form = SellerUserCreationForm(data=form_data)
+        self.assertFalse(form.is_valid())
 
 
 # Create your tests here.

@@ -60,6 +60,11 @@
                 <label for="id_phone_number">Phone Number: </label>
                 <br>
                 {{ profile_form.phone_number }}
+                {% if profile_form.phone_number.errors %}
+                    <div class="notification is-danger">
+                        {{ profile_form.phone_number.errors }}
+                    </div>
+                {% endif %}
             </div>
 
             <div class="field">
